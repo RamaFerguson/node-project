@@ -1,39 +1,214 @@
-[{
-        "deck": [
+[
 
-            {
-                "name": "Dark Phoenix",
-                "attack": 1,
-                "health": 2,
-                "cost": 1
-            },
-            {
-                "name": "Mysterious Phelid",
-                "attack": 2,
-                "health": 3,
-                "cost": 2
-            },
-            {
-                "name": "Creeping Crawler",
-                "attack": 5,
-                "health": 4,
-                "cost": 3
-            },
-            {
-                "name": "Mean Boy",
-                "attack": 7,
-                "health": 6,
-                "cost": 4
-            },
-            {
-                "name": "Legendary Ant",
-                "attack": 11,
-                "health": 10,
-                "cost": 5
-            }
-        ],
+    {
+        "name": "Militia",
+        "attack": 1,
+        "health": 3,
+        "cost": 1,
+        "keywords": []
+    },
+    {
+        "name": "Wooden Palisade",
+        "attack": 0,
+        "health": 5,
+        "cost": 1,
+        "keywords": []
+    },
+    {
+        "name": "Light Slayer",
+        "attack": 2,
+        "health": 2,
+        "cost": 1,
+        "keywords": []
+    },
+    {
+        "name": "Mysterious Phelid",
+        "attack": 2,
+        "health": 4,
+        "cost": 2,
+        "keywords": []
+    },
+    {
+        "name": "Slime Felcher",
+        "attack": 3,
+        "health": 3,
+        "cost": 2,
+        "keywords": []
+    },
+    {
+        "name": "Reckless Avandon",
+        "attack": 4,
+        "health": 2,
+        "cost": 2,
+        "keywords": []
+    },
+    {
+        "name": "Protective Barzrard",
+        "attack": 1,
+        "health": 5,
+        "cost": 2,
+        "keywords": []
+    },
+    {
+        "name": "Sturdy Wall",
+        "attack": 0,
+        "health": 7,
+        "cost": 2,
+        "keywords": []
+    },
+    {
+        "name": "Creeping Crawler",
+        "attack": 5,
+        "health": 4,
+        "cost": 3,
+        "keywords": []
+    },
+    {
+        "name": "Incogroach",
+        "attack": 6,
+        "health": 3,
+        "cost": 3,
+        "keywords": []
+    },
+    {
+        "name": "Ywontudei",
+        "attack": 7,
+        "health": 2,
+        "cost": 3,
+        "keywords": []
+    },
+    {
+        "name": "Chwouster",
+        "attack": 8,
+        "health": 1,
+        "cost": 3,
+        "keywords": []
+    },
+    {
+        "name": "Angry Lady",
+        "attack": 8,
+        "health": 5,
+        "cost": 4,
+        "keywords": []
+    },
+    {
+        "name": "Enraged Dog",
+        "attack": 9,
+        "health": 4,
+        "cost": 4,
+        "keywords": []
+    },
+    {
+        "name": "Dark Ladybird",
+        "attack": 10,
+        "health": 3,
+        "cost": 4,
+        "keywords": []
+    },
+    {
+        "name": "Champion Champignon",
+        "attack": 11,
+        "health": 2,
+        "cost": 4,
+        "keywords": []
+    },
+    {
+        "name": "Oups27",
+        "attack": 12,
+        "health": 1,
+        "cost": 4,
+        "keywords": []
+    },
+    {
+        "name": "Timidape",
+        "attack": 6,
+        "health": 7,
+        "cost": 4,
+        "keywords": []
+    },
+    {
+        "name": "Psion",
+        "attack": 5,
+        "health": 8,
+        "cost": 4,
+        "keywords": []
+    },
+    {
+        "name": "Noisy Table",
+        "attack": 4,
+        "health": 9,
+        "cost": 4,
+        "keywords": []
+    },
+    {
+        "name": "Grey Magician",
+        "attack": 3,
+        "health": 10,
+        "cost": 4,
+        "keywords": []
+    },
 
-
-}
-
+    {
+        "name": "Legendary Ant",
+        "attack": 11,
+        "health": 10,
+        "cost": 5,
+        "keywords": []
+    },
+    {
+        "name": "Kobayashi Groo",
+        "attack": 12,
+        "health": 9,
+        "cost": 5,
+        "keywords": []
+    },
+    {
+        "name": "Ebony Drakkon",
+        "attack": 13,
+        "health": 8,
+        "cost": 5,
+        "keywords": []
+    },
+    {
+        "name": "Grim Reaper",
+        "attack": 14,
+        "health": 7,
+        "cost": 5,
+        "keywords": []
+    },
+    {
+        "name": "Hamaon Dispenser",
+        "attack": 15,
+        "health": 6,
+        "cost": 5,
+        "keywords": []
+    },
+    {
+        "name": "Cojnitive Cog",
+        "attack": 16,
+        "health": 4,
+        "cost": 5,
+        "keywords": []
+    },
+    {
+        "name": "Francis Gau",
+        "attack": 17,
+        "health": 3,
+        "cost": 5,
+        "keywords": []
+    },
+    {
+        "name": "Ranch Rammer",
+        "attack": 18,
+        "health": 2,
+        "cost": 5,
+        "keywords": []
+    },
+    {
+        "name": "Owarida",
+        "attack": 19,
+        "health": 1,
+        "cost": 5,
+        "keywords": []
+    }
 ]
