@@ -12,25 +12,25 @@ class Game {
         this.timestamp = today.toISOString();
 
         this.player1 = {
-            uuid = player1.uuid,
-            life = 20,
-            deck = player1.deck,
-            hand = [],
-            field = [],
-            graveyard = [],
-            mana = 1,
-            ready = false
+            uuid: player1.uuid,
+            life: 20,
+            deck: player1.deck,
+            hand: [],
+            field: [],
+            graveyard: [],
+            mana: 1,
+            ready: false
         }
         
         this.player2 = {
-            uuid = player2.uuid,
-            life = 20,
-            deck = player2.deck,
-            hand = [],
-            field = [],
-            graveyard = [],
-            mana = 1,
-            ready = false
+            uuid: player2.uuid,
+            life: 20,
+            deck: player2.deck,
+            hand: [],
+            field: [],
+            graveyard: [],
+            mana: 1,
+            ready: false
         }
 
         this.turnCount = 0;
