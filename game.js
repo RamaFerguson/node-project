@@ -37,3 +37,10 @@ class Game {
     }
 }
 
+var parseDatabase = () => {
+    
+}
+
+var processGameLogic = (game) => {
+    
+}
