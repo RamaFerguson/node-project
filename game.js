@@ -3,44 +3,65 @@ const uuidv1 = require("uuid/v1");
 
 const liveGames = "./live_games/";
 const deadGames = "./dead_games/";
+const cardDB;
 
 class Game {
     constructor(player1, player2) {
-        this.filePath = `${player1.uuid}_${player2.uuid}.json`
+        this.filePath = `${player1.uuid}_${player2.uuid}.json`;
 
         let today = new Date();
         this.timestamp = today.toISOString();
 
         this.player1 = {
-            uuid = player1.uuid,
-            life = 20,
-            deck = player1.deck,
-            hand = [],
-            field = [],
-            graveyard = [],
-            mana = 1,
-            ready = false
-        }
-        
+            uuid: player1.uuid,
+            life: 20,
+            hero: player1.deck.hero,
+            deck: populateDeck(player1.deck.cards),
+            hand: [],
+            field: [],
+            graveyard: [],
+            mana: 1,
+            ready: false
+        };
+
         this.player2 = {
-            uuid = player2.uuid,
-            life = 20,
-            deck = player2.deck,
-            hand = [],
-            field = [],
-            graveyard = [],
-            mana = 1,
-            ready = false
-        }
+            uuid: player2.uuid,
+            life: 20,
+            hero: player2.deck.hero,
+            deck: populateDeck(player2.deck.cards),
+            hand: [],
+            field: [],
+            graveyard: [],
+            mana: 1,
+            ready: false
+        };
 
         this.turnCount = 0;
     }
 }
 
-var parseDatabase = () => {
-    
+class Card {
+    constructor(cardInfo, index) {
+        this.name = cardInfo.name;
+        this.attack = cardInfo.attack;
+        this.health = cardInfo.health;
+        this.cost = cardInfo.cost;
+        this.keywords = cardInfo.keywords;
+
+        this.GID = index;
+    }
 }
 
-var processGameLogic = (game) => {
-    
-}
+var populateDeck = playerDeck => {
+    let deck = [];
+    let index = 0;
+
+    for (const cardID of playerDeck) {
+        let card = Card(cardDB[cardID], index);
+        deck.push(card)
+    }
+
+    return deck
+};
+
+var processGameLogic = game => {};
