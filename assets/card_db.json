@@ -170,16 +170,16 @@
         "keywords": []
     },
     {
-        "name": "Grim Reaper",
+        "name": "Hamaon Dispenser",
         "attack": 14,
         "health": 7,
         "cost": 5,
         "keywords": []
     },
     {
-        "name": "Hamaon Dispenser",
+        "name": "Grim Reaper",
         "attack": 15,
-        "health": 6,
+        "health": 5,
         "cost": 5,
         "keywords": []
     },
