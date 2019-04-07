@@ -44,6 +44,23 @@ class Game {
     processGameLogic() {
         
     }
+
+    shuffleDeck(deck) {
+        let currentCard = deck.length;
+        let tempCard, randomCard;
+
+        while (0 !== currentCard) {
+            
+            randomCard = Math.floor(Math.random() * currentCard);
+            currentCard--;
+            
+            tempCard = deck[currentCard];
+            deck[currentCard] = deck[randomCard];
+            deck[randomCard] = tempCard;
+        }
+
+        return deck;
+    };
 }
 
 class Card {
