@@ -1,0 +1,186 @@
+{
+    "uuid":"87y7uigvhjjhiu89ygyufgvhjhk",
+    "username":"helloFriend",
+    "password":"fake_hash",
+    "wins": 29,
+    "losses": 99,
+    "draws": 1,
+    "deck": [
+        {
+            "name": "Militia",
+            "attack": 1,
+            "health": 3,
+            "cost": 1,
+            "keywords": []
+        },
+        {
+            "name": "Militia",
+            "attack": 1,
+            "health": 3,
+            "cost": 1,
+            "keywords": []
+        },
+        {
+            "name": "Militia",
+            "attack": 1,
+            "health": 3,
+            "cost": 1,
+            "keywords": []
+        },
+        {
+            "name": "Militia",
+            "attack": 1,
+            "health": 3,
+            "cost": 1,
+            "keywords": []
+        },
+        {
+            "name": "Militia",
+            "attack": 1,
+            "health": 3,
+            "cost": 1,
+            "keywords": []
+        },
+        {
+            "name": "Militia",
+            "attack": 1,
+            "health": 3,
+            "cost": 1,
+            "keywords": []
+        },
+        {
+            "name": "Militia",
+            "attack": 1,
+            "health": 3,
+            "cost": 1,
+            "keywords": []
+        },
+        {
+            "name": "Militia",
+            "attack": 1,
+            "health": 3,
+            "cost": 1,
+            "keywords": []
+        },
+        {
+            "name": "Reckless Avandon",
+            "attack": 4,
+            "health": 2,
+            "cost": 2,
+            "keywords": []
+        },
+        {
+            "name": "Reckless Avandon",
+            "attack": 4,
+            "health": 2,
+            "cost": 2,
+            "keywords": []
+        },
+        {
+            "name": "Reckless Avandon",
+            "attack": 4,
+            "health": 2,
+            "cost": 2,
+            "keywords": []
+        },
+        {
+            "name": "Reckless Avandon",
+            "attack": 4,
+            "health": 2,
+            "cost": 2,
+            "keywords": []
+        },
+        {
+            "name": "Reckless Avandon",
+            "attack": 4,
+            "health": 2,
+            "cost": 2,
+            "keywords": []
+        },
+        {
+            "name": "Ywontudei",
+            "attack": 7,
+            "health": 2,
+            "cost": 3,
+            "keywords": []
+        },
+        {
+            "name": "Ywontudei",
+            "attack": 7,
+            "health": 2,
+            "cost": 3,
+            "keywords": []
+        },
+        {
+            "name": "Ywontudei",
+            "attack": 7,
+            "health": 2,
+            "cost": 3,
+            "keywords": []
+        },
+        {
+            "name": "Ywontudei",
+            "attack": 7,
+            "health": 2,
+            "cost": 3,
+            "keywords": []
+        },
+        {
+            "name": "Ywontudei",
+            "attack": 7,
+            "health": 2,
+            "cost": 3,
+            "keywords": []
+        },
+        {
+            "name": "Champion Champignon",
+            "attack": 11,
+            "health": 2,
+            "cost": 4,
+            "keywords": []
+        },
+        {
+            "name": "Champion Champignon",
+            "attack": 11,
+            "health": 2,
+            "cost": 4,
+            "keywords": []
+        },
+        {
+            "name": "Champion Champignon",
+            "attack": 11,
+            "health": 2,
+            "cost": 4,
+            "keywords": []
+        },
+        {
+            "name": "Champion Champignon",
+            "attack": 11,
+            "health": 2,
+            "cost": 4,
+            "keywords": []
+        },
+        {
+            "name": "Champion Champignon",
+            "attack": 11,
+            "health": 2,
+            "cost": 4,
+            "keywords": []
+        },
+        {
+            "name": "Champion Champignon",
+            "attack": 11,
+            "health": 2,
+            "cost": 4,
+            "keywords": []
+        },
+        {
+            "name": "Champion Champignon",
+            "attack": 11,
+            "health": 2,
+            "cost": 4,
+            "keywords": []
+        }
+    ]
+
+}
