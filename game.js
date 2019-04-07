@@ -37,8 +37,9 @@ class Game {
             mana: 1,
             ready: false
         };
-
+        
         this.turnCount = 0;
+        this.turnLogs = [];
     }
 
     processGameLogic() {
@@ -61,6 +62,27 @@ class Game {
 
         return deck;
     };
+
+    logTurn() {
+        let turn = {
+            "turn": this.turnCount,
+            "p1_state": [
+                this.player1.life,
+                this.player1.deck,
+                this.player1.hand,
+                this.player1.field,
+                this.player1.graveyard
+            ],
+            "p2_state": [
+                this.player2.life,
+                this.player2.deck,
+                this.player2.hand,
+                this.player2.field,
+                this.player2.graveyard
+            ]
+        }
+        this.turnLogs.push(turn);
+    }
 }
 
 class Card {
