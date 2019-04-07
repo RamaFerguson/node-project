@@ -44,7 +44,7 @@ var checkUserNameLogIn = async function (inputUserName) {
     });
 };
 
-//TODO: Stop searching JSONs once a match is made
+//TODO: Figure out how this would work using mongo cloud db
 
 let gay = checkUserNameLogIn("darkflamemaster1983")
 // let gays = checkUserNameLogIn("helloFriend")

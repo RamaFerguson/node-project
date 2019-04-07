@@ -101,6 +101,7 @@ var populateDeck = playerDeck => {
     let deck = [];
     let index = 0;
 
+    // const instead of let?
     for (const cardID of playerDeck) {
         let card = Card(cardDB[cardID], index);
         deck.push(card)
