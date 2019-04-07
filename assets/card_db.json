@@ -1,5 +1,4 @@
 {
-
     "militia":{
         "name": "Militia",
         "attack": 1,
@@ -56,7 +55,7 @@
         "cost": 2,
         "keywords": []
     },
-    "creepy_crawler":{
+    "creeping_crawler":{
         "name": "Creeping Crawler",
         "attack": 5,
         "health": 4,
