@@ -29,4 +29,3 @@ app.get('/signup', (request, response) => {
 app.listen(port, () => {
     console.log('Vanguard Assult is online');
 });
-
