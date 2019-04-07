@@ -1,5 +1,6 @@
 var express = require('express');
 var hbs = require('hbs');
+var port = process.env.PORT || 8080;
 
 var app = express();
 
@@ -25,7 +26,7 @@ app.get('/signup', (request, response) => {
     });
 });
 
-app.listen(8080, () => {
+app.listen(port, () => {
     console.log('Vanguard Assult is online');
 });
 
