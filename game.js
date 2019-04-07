@@ -4,6 +4,8 @@ const uuidv1 = require("uuid/v1");
 const liveGames = "./live_games/";
 const deadGames = "./dead_games/";
 const cardDB;
+const keywords;
+const powers;
 
 class Game {
     constructor(player1, player2) {
@@ -38,6 +40,10 @@ class Game {
 
         this.turnCount = 0;
     }
+
+    processGameLogic() {
+        
+    }
 }
 
 class Card {
@@ -63,5 +69,3 @@ var populateDeck = playerDeck => {
 
     return deck
 };
-
-var processGameLogic = game => {};
