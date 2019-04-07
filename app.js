@@ -3,8 +3,8 @@ const port = process.env.PORT || 8000;
 
 const app = express();
 
-app.get("/", function (request, result) {
-    result.send(JSON.stringify({ Hello: "World"}));
+app.get("/", function (request, response) {
+    response.send(JSON.stringify({ Hello: "World"}));
 });
 
 app.listen(port, function () {
