@@ -12,8 +12,16 @@ var checkUserNameLogIn = async function (inputUserName) {
         if (error) {
             console.log("Glob failed", err);
         }
+
+        let userFound = false;
+        let userJSON = {};
         // reads each user file
-        files.forEach(function (file) {
+        for (let file of files) {
+            if (userFound === true) {
+                return // TODO decide what to do here
+            }
+
+            // files.forEach(function (file) {
             // read current user file
             fs.readFile(file, 'utf8', function (error, data) {
                 if (error) {
@@ -23,13 +31,16 @@ var checkUserNameLogIn = async function (inputUserName) {
                 // console.log(userObject);
                 if (userObject.username === inputUserName) {
                     console.log('true');
+                    userFound = true;
+                    userJSON = userObject;
                     return true;
                 } else {
                     console.log('false');
                     return false;
                 }
             });
-        });
+            // });
+        }
     });
 };
 
