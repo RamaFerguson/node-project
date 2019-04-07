@@ -1,5 +1,5 @@
-const express = require('express')
-const hbs = require('hbs')
+var express = require('express');
+var hbs = require('hbs');
 
 var app = express();
 
@@ -20,6 +20,6 @@ app.get('/login', (request, response) => {
 });
 
 app.listen(8080, () => {
-    console.log('Vanguard Assult is online')
+    console.log('Vanguard Assult is online');
 });
 
