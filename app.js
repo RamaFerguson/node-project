@@ -31,10 +31,12 @@ const client = new MongoClient(uri, {
 });
 
 // Initialize connection once
+var nodeProjectDB;
 client.connect(function (err, clientObject) {
     if (err) throw err;
     console.log(clientObject);
-    var nodeProjectDB = clientObject.db;
+    console.log(clientObject.db);
+    nodeProjectDB = clientObject.db;
 
     // Start the application after the database connection is ready
     app.listen(port);
