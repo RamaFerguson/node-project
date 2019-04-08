@@ -137,8 +137,8 @@ app.get('/deckbuild', (request, response) => {
     });
 });
 
-
-app.listen(port, () => {
-    console.log('Vanguard Assault is online')
-});
+// Don't need this here, I moved it to line 41
+// app.listen(port, () => {
+//     console.log('Vanguard Assault is online')
+// });
 
