@@ -1,13 +1,15 @@
-const fs = require("fs");
-const uuidv1 = require("uuid/v1");
+//const fs = require("fs");
+//const uuidv1 = require("uuid/v1");
+const Card = require("./cards")
+const Heroes = require("./heroes")
 
 const liveGames = "./live_games/";
 const deadGames = "./dead_games/";
-const cardDB;
-const keywords;
-const powers;
 
-class Game {
+const cardDB;
+//const keywords;
+
+module.exports = class Game {
     constructor(player1, player2) {
         this.filePath = `${player1.uuid}_${player2.uuid}.json`;
 
@@ -17,33 +19,33 @@ class Game {
         this.player1 = {
             uuid: player1.uuid,
             life: 20,
-            hero: player1.deck.hero,
+            hero: Heroes[`${player1.deck.hero}`].name,
+            power: Heroes[`${player1.deck.hero}`].power,
             deck: populateDeck(player1.deck.cards),
             hand: [],
             field: [],
             graveyard: [],
             mana: 1,
+            damage: 0,
             ready: false
         };
 
         this.player2 = {
             uuid: player2.uuid,
             life: 20,
-            hero: player2.deck.hero,
+            hero: Heroes[`${player2.deck.hero}`].name,
+            power: Heroes[`${player2.deck.hero}`].power,
             deck: populateDeck(player2.deck.cards),
             hand: [],
             field: [],
             graveyard: [],
             mana: 1,
+            damage: 0,
             ready: false
         };
         
         this.turnCount = 0;
         this.turnLogs = [];
-    }
-
-    processGameLogic() {
-        
     }
 
     shuffleDeck(deck) {
@@ -59,8 +61,6 @@ class Game {
             deck[currentCard] = deck[randomCard];
             deck[randomCard] = tempCard;
         }
-
-        return deck;
     };
 
     logTurn() {
@@ -83,18 +83,8 @@ class Game {
         }
         this.turnLogs.push(turn);
     }
-}
 
-class Card {
-    constructor(cardInfo, index) {
-        this.name = cardInfo.name;
-        this.attack = cardInfo.attack;
-        this.health = cardInfo.health;
-        this.cost = cardInfo.cost;
-        this.keywords = cardInfo.keywords;
-
-        this.GID = index;
-    }
+    
 }
 
 var populateDeck = playerDeck => {
@@ -102,7 +92,7 @@ var populateDeck = playerDeck => {
     let index = 0;
 
     for (const cardID of playerDeck) {
-        let card = Card(cardDB[cardID], index);
+        let card = new Card(cardDB[cardID], index);
         deck.push(card)
     }
 
