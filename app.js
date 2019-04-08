@@ -3,7 +3,7 @@ const hbs = require('hbs')
 
 var app = express();
 
-hbs.registerPartials(__dirname + '/views');
+hbs.registerPartials(__dirname + '/views/partials');
 
 app.set('view engine', 'hbs');
 app.use(express.static(__dirname + '/public'));
@@ -22,6 +22,18 @@ app.get('/login', (request, response) => {
 app.get('/signup', (request, response) => {
     response.render('signup.hbs', {
         title: 'signup',
+    });
+});
+
+app.get('/user', (request, response) => {
+    response.render('main_user_page.hbs', {
+        title: 'user',
+    });
+});
+
+app.get('/deckbuild', (request, response) => {
+    response.render('deckbuild.hbs', {
+        title: 'deckbuild',
     });
 });
 
