@@ -31,11 +31,10 @@ const client = new MongoClient(uri, {
 });
 
 // Initialize connection once
-let db;
-client.connect(function (err, database) {
+client.connect(function (err, clientObject) {
     if (err) throw err;
-
-    db = database;
+    console.log(database);
+    var nodeProjectDB = clientObject.db;
 
     // Start the application after the database connection is ready
     app.listen(port);
@@ -53,7 +52,7 @@ app.post("/newPlayerAccount", async function (request, response) {
         return new Promise((resolve, reject) => {
             console.log(username);
             console.log(collection);
-            db.collection(collection).find({
+            nodeProjectDB.collection(collection).find({
                 "username": username
             }, {
                 projection: {
@@ -81,7 +80,7 @@ app.post("/newPlayerAccount", async function (request, response) {
         response.send('username already taken')
     } else {
         // adds new user to player collection
-        db.collection(PLAYER_COLLECTION).insertOne({
+        nodeProjectDB.collection(PLAYER_COLLECTION).insertOne({
             "uuid": uuidv1(),
             "username": username,
             "password": hashedPassword,
