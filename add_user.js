@@ -45,7 +45,7 @@ app.post('/newStudent', async function (request, response) {
     let email = request.body.email;
 
     let db = utils.getDb();
-    let userExists = await checkUserIdInDb(id, db);
+    let userExists = await checkUserIdInDb(id, db, "student");
     if (userExists === true) {
         response.send('Username already taken')
     } else {
