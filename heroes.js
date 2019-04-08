@@ -11,7 +11,7 @@ module.exports = heroes = {
         }
     },
     brodia: {
-        name: "Brodia",
+        name: "Brodia, The Vanguard",
         power: opponent => {
             if (this.damage > 3) {
                 this.damage = 0;
@@ -33,8 +33,8 @@ module.exports = heroes = {
             return null;
         }
     },
-    mindslayer: {
-        name: "Michael Mindslayer",
+    brainum: {
+        name: "Brainum",
         power: opponent => {
             if (this.hand < 5) {
                 this.hand.push(this.deck.shift());

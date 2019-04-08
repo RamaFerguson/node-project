@@ -1,6 +1,4 @@
-const keywords;
-
-class Card {
+module.exports = class Card {
     constructor(cardInfo, index) {
         this.name = cardInfo.name;
         this.attack = cardInfo.attack;
@@ -11,5 +9,3 @@ class Card {
         this.GID = index;
     }
 }
-
-module.exports = Card;
