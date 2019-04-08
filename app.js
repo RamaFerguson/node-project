@@ -33,7 +33,7 @@ const client = new MongoClient(uri, {
 // Initialize connection once
 client.connect(function (err, clientObject) {
     if (err) throw err;
-    console.log(database);
+    console.log(clientObject);
     var nodeProjectDB = clientObject.db;
 
     // Start the application after the database connection is ready
