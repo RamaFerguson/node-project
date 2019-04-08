@@ -49,9 +49,11 @@ app.post("/newPlayerAccount", async function (request, response) {
     // function that checks if user already exists in players database
     // returns True if they are
     // returns False if they do not exist
-    function checkUserInDb(username, database, collection) {
+    function checkUserInDb(username, collection) {
         return new Promise((resolve, reject) => {
-            database.collection(collection).find({
+            console.log(username);
+            console.log(collection);
+            db.collection(collection).find({
                 "username": username
             }, {
                 projection: {
@@ -74,7 +76,7 @@ app.post("/newPlayerAccount", async function (request, response) {
     let hashedPassword = await bcrypt.hash(password, saltRounds);
 
     // verifying username is new
-    let userExists = await checkUserInDb(username, db, PLAYER_COLLECTION);
+    let userExists = await checkUserInDb(username, PLAYER_COLLECTION);
     if (userExists === true) {
         response.send('username already taken')
     } else {
