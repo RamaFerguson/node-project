@@ -57,7 +57,7 @@ module.exports = class Game {
 
         this.turnCount = 0;
         this.turnLogs = [];
-        this.logTurn();
+        this.logTurn(["Game Start!"]);
     }
 
     acceptTurn(turn) {
@@ -81,28 +81,44 @@ module.exports = class Game {
     }
 
     resolveTurn() {
+        let log = [];
+
         sortField(this.player1.field);
         sortField(this.player2.field);
-        
+
+        this.player1.damage = calcDamage(this.player1.field)
+        this.player2.damage = calcDamage(this.player2.field)
+
+        for (let card of this.player1.field) {
+            if (card.includes("sneak")) {
+                continue;
+            }
+            else if (player2.damage >= card.health) {
+                player2.damage -= card.health;
+                log.push(`P1: ${card.name} destroyed!`)
+                player1.field.shift()
+            }
+        }
     }
 
-    logTurn() {
+    logTurn(log) {
         let turn = {
-            turn: this.turnCount,
-            p1_state: [
+            "turn": this.turnCount,
+            "p1_state": [
                 this.player1.life,
                 this.player1.deck,
                 this.player1.hand,
                 this.player1.field,
                 this.player1.graveyard
             ],
-            p2_state: [
+            "p2_state": [
                 this.player2.life,
                 this.player2.deck,
                 this.player2.hand,
                 this.player2.field,
                 this.player2.graveyard
-            ]
+            ],
+            "log": log
         };
         this.turnLogs.push(turn);
     }
@@ -112,8 +128,8 @@ var populateDeck = playerDeck => {
     let deck = [];
     let index = 0;
 
-    // const instead of let?
-    for (const cardID of playerDeck) {
+    
+    for (let cardID of playerDeck) {
         let card = new Card(cardDB[cardID], index);
         deck.push(card);
         index++;
@@ -143,16 +159,16 @@ var sortField = field => {
 };
 
 var sortFieldHealth = (prev, next) => {
-    return next.health - prev.health;
+    return -(next.health - prev.health);
 };
 
 var sortFieldAttack = (prev, next) => {
     if (prev.health === next.health) {
         if (prev.attack < next.attack) {
-            return 1;
+            return -1;
         }
         if (prev.attack > next.attack) {
-            return -1;
+            return 1;
         }
     }
     return 0;
@@ -160,13 +176,22 @@ var sortFieldAttack = (prev, next) => {
 
 var sortFieldWall = (prev, next) => {
     if (prev.keywords.includes("wall") && !next.keywords.includes("wall")) {
-        return 1;
+        return -1;
     }
     if (!prev.keywords.includes("wall") && next.keywords.includes("wall")) {
-        return -1;
+        return 1;
     }
     return 0;
 };
+
+var calcDamage = (field) => {
+    return field.map(card => {
+        return card.attack;
+    })
+    .reduce((total, next) => {
+        return total + next;
+    });
+}
 
 var testDeck = [
     "militia",
@@ -203,6 +228,14 @@ while (testHand.length < 5) {
 }
 
 sortField(testHand);
-
 console.log(newDeck);
 console.log(testHand);
+console.log(
+    testHand
+        .map(card => {
+            return card.attack;
+        })
+        .reduce((total, next) => {
+            return total + next;
+        })
+);
