@@ -36,7 +36,7 @@ client.connect(function (err, clientObject) {
     if (err) throw err;
     console.log(clientObject);
     console.log(clientObject.db);
-    nodeProjectDB = clientObject.db;
+    nodeProjectDB = clientObject.db('node_project');
 
     // Start the application after the database connection is ready
     app.listen(port);
