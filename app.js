@@ -6,7 +6,8 @@ var app = express();
 hbs.registerPartials(__dirname + '/views/partials');
 
 app.set('view engine', 'hbs');
-app.use(express.static(__dirname + '/public'));
+app.use(express.static('assets'));
+
 
 app.get('/', (request, response) => {
     response.render('landing.hbs', {
@@ -36,6 +37,7 @@ app.get('/deckbuild', (request, response) => {
         title: 'deckbuild',
     });
 });
+
 
 app.listen(8080, () => {
     console.log('Vanguard Assult is online')
