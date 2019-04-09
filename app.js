@@ -150,13 +150,13 @@ app.get('/login', (request, response) => {
 
 app.get('/signup', (request, response) => {
     response.render('signup.hbs', {
-        title: 'signup',
+        title: 'Sign Up',
     });
 });
 
 app.get('/user', (request, response) => {
     response.render('main_user_page.hbs', {
-        title: 'user',
+        title: 'Profile',
     });
 });
 
