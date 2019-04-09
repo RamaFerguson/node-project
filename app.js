@@ -89,13 +89,13 @@ app.post("/newPlayerAccount", async function (request, response) {
             "wins": 0,
             "losses": 0,
             "draws": 0,
-            "deck": []
-        }, (error, response) => {
+            "deck": {}
+        }, (error, result) => {
             if (error) {
                 response.send('unable to insert student');
             } else {
                 // placeholder for test purposes
-                response.send(JSON.stringify(response.ops, undefined, 2));
+                response.send(JSON.stringify(result.ops, undefined, 2));
 
                 // probably use this once we know db works
                 // response.send('user added successfully')
