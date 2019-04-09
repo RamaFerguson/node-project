@@ -54,6 +54,8 @@ var initGame = (database, player1, player2) => {
     });
 };
 
+
+
 module.exports = {
     initGame: initGame
 };

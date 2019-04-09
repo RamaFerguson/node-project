@@ -37,43 +37,52 @@ function checkUserInDb(username, collection, database) {
     return new Promise((resolve, reject) => {
         // console.log(username);
         // console.log(collection);
-        database.collection(collection).find({
-            "username": username
-        }, {
-            "username": 1
-        }).toArray(function (error, result) {
-            if (error) {
-                return reject(error);
-            } else {
-                if (result.length === 0) {
-                    resolve(false);
+        database
+            .collection(collection)
+            .find(
+                {
+                    username: username
+                },
+                {
+                    username: 1
                 }
-                resolve(true);
-            }
-        });
+            )
+            .toArray(function(error, result) {
+                if (error) {
+                    return reject(error);
+                } else {
+                    if (result.length === 0) {
+                        resolve(false);
+                    }
+                    resolve(true);
+                }
+            });
     });
-};
+}
 
 function returnUserDetails(username, collection, database) {
     return new Promise((resolve, reject) => {
         // console.log(username);
         // console.log(collection);
-        database.collection(collection).find({
-            "username": username
-        }).toArray(function (error, result) {
-            if (error) {
-                console.log('error in returnUserDetails')
-                reject(error);
-            } else {
-                console.log('returnUserDetails worked')
-                resolve(result);
-                //JSON.stringify(result.ops, undefined, 2)
-            };
-        });
+        database
+            .collection(collection)
+            .find({
+                username: username
+            })
+            .toArray(function(error, result) {
+                if (error) {
+                    console.log("error in returnUserDetails");
+                    reject(error);
+                } else {
+                    console.log("returnUserDetails worked");
+                    resolve(result);
+                    //JSON.stringify(result.ops, undefined, 2)
+                }
+            });
     });
-};
+}
 
-var checkLiveGameAvailable = (player1, player2, collection, database) => {
+var checkGame = (player1, player2, collection, database) => {
     return new Promise((resolve, reject) => {
         let searchPlayers = [player1.uuid, player2.uuid].sort();
         database
@@ -83,12 +92,12 @@ var checkLiveGameAvailable = (player1, player2, collection, database) => {
             })
             .toArray(function(error, result) {
                 if (error) {
-                    return reject(error);
+                    reject(error);
                 } else {
                     if (result.length === 0) {
-                        resolve(true);
+                        resolve(null);
                     }
-                    resolve(false);
+                    resolve(result[0]);
                 }
             });
     });
@@ -97,5 +106,5 @@ var checkLiveGameAvailable = (player1, player2, collection, database) => {
 module.exports = {
     checkUserInDb,
     returnUserDetails,
-    checkLiveGameAvailable
+    checkGame
 };
