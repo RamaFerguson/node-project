@@ -17,7 +17,7 @@ module.exports = heroes = {
     },
     brodia: {
         name: "Brodia, The Vanguard",
-        "desc": "You can only take up to 3 damage in a turn.",
+        desc: "You can only take up to 3 damage in a turn.",
         power: (pID, opponent) => {
             if (this.damage > 3) {
                 this.damage = 3;
@@ -27,7 +27,7 @@ module.exports = heroes = {
     },
     hundred_bats: {
         name: "One Hundred Bats",
-        "desc": "Deal 2 direct damage every turn.",
+        desc: "Deal 2 direct damage every turn.",
         power: (pID, opponent) => {
             opponent.life -= 2;
             return `${pID}: opponent bleeds for 2 damage!`;
@@ -35,15 +35,17 @@ module.exports = heroes = {
     },
     guuch: {
         name: "The Guuch",
-        "desc": "You have 2x mana every turn.",
+        desc: "You have 2x mana every turn.",
         power: (pID, opponent) => {
-            this.mana += this.mana;
+            if (this.mana < 10) {
+                this.mana++;
+            }
             return `${pID}: your mana overcharges!`;
         }
     },
     brainum: {
         name: "Brainum",
-        "desc": "Draw 2 cards every turn.",
+        desc: "Draw 2 cards every turn.",
         power: (pID, opponent) => {
             if (this.hand < 5) {
                 this.hand.push(this.deck.shift());

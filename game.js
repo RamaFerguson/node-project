@@ -94,11 +94,25 @@ module.exports = class Game {
 
         log.push(dealDamage("p1", this.player1, this.player2));
         log.push(dealDamage("p2", this.player2, this.player1));
+        log.push(this.player1.power(player2));
+        log.push(this.player2.power(player1));
 
         this.player1.damage = 0;
         this.player2.damage = 0;
-        this.logTurn(log);
 
+        if (this.player1.mana < 5) {
+            this.player1.mana++;
+        }
+        if (this.player2.mana < 5) {
+            this.player2.mana++;
+        }
+
+        this.player1.ready = false;
+        this.player2.ready = false;
+
+        this.turnCount++;
+
+        this.logTurn(log);
     }
 
     logTurn(log) {
