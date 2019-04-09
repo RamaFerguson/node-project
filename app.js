@@ -8,6 +8,9 @@ var app = express();
 // cookies
 const cookieParser = require('cookie-parser');
 
+// add new user function
+const addUser = require('./add_user');
+
 // uuid module to allow unique
 const uuidv1 = require("uuid/v1");
 
@@ -50,37 +53,11 @@ app.post("/newPlayerAccount", async function (request, response) {
     let username = request.body.username;
     let password = request.body.password;
 
-    // function that checks if user already exists in players database
-    // returns True if they are
-    // returns False if they do not exist
-    function checkUserInDb(username, collection) {
-        return new Promise((resolve, reject) => {
-            // console.log(username);
-            // console.log(collection);
-            nodeProjectDB.collection(collection).find({
-                "username": username
-            }, {
-                projection: {
-                    "username": 1
-                }
-            }).toArray(function (error, response) {
-                if (error) {
-                    return reject(error);
-                } else {
-                    if (response.length === 0) {
-                        resolve(false)
-                    }
-                    resolve(true)
-                }
-            });
-        });
-    };
-
     // hashing password
     let hashedPassword = await bcrypt.hash(password, saltRounds);
 
     // verifying username is new
-    let userExists = await checkUserInDb(username, PLAYER_COLLECTION);
+    let userExists = await addUser.checkUserInDb(username, PLAYER_COLLECTION, nodeProjectDB);
     if (userExists === true) {
         response.render('user_exists.hbs', {
             title: 'Uh oh!'
@@ -101,14 +78,55 @@ app.post("/newPlayerAccount", async function (request, response) {
                     title: 'Uh oh!'
                 });
             } else {
-                // placeholder for test purposes
-                // response.send(JSON.stringify(result.ops, undefined, 2));
-
                 response.render('new_user_success.hbs', {
                     title: 'Success!'
                 });
             }
         });
+    };
+});
+
+app.post("/logInPlayer", async function (request, response) {
+    let username = request.body.username;
+    let password = request.body.password;
+
+    let fetchedDetails;
+
+    // verifying username exists
+    let userExists = await addUser.checkUserInDb(username, PLAYER_COLLECTION, nodeProjectDB);
+    if (userExists === false) {
+        response.render('user_does_not_exist.hbs', {
+            title: 'Uh oh!'
+        });
+    } else {
+
+        // fetch hashed password on db
+        nodeProjectDB.collection(PLAYER_COLLECTION).find({
+            "username": username,
+        }, {
+            "password": 1
+        }, (error, result) => {
+            if (error) {
+                response.render('server_error.hbs', {
+                    title: 'Uh oh!'
+                });
+            } else {
+                fetchedDetails = JSON.stringify(result.ops, undefined, 2);
+                // compare hashed password with provided password
+                bcrypt.compare(password, fetchedDetails.password, function(error, result) {
+                    // res == false
+                });
+                response.render('new_user_success.hbs', {
+                    title: 'Success!'
+                });
+            }
+        });
+
+
+        let hashedPassword = await bcrypt.compare(password, saltRounds);
+
+        // adds new user to player collection
+
     };
 });
 
@@ -152,4 +170,3 @@ app.get('/deckbuild', (request, response) => {
 // app.listen(port, () => {
 //     console.log('Vanguard Assault is online')
 // });
-
