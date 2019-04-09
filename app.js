@@ -79,7 +79,7 @@ app.post("/newPlayerAccount", async function (request, response) {
     // verifying username is new
     let userExists = await checkUserInDb(username, PLAYER_COLLECTION);
     if (userExists === true) {
-        response.render('/user_exists.hbs', {
+        response.render('user_exists.hbs', {
             title: 'Uh oh!'
         });
     } else {
@@ -94,14 +94,14 @@ app.post("/newPlayerAccount", async function (request, response) {
             "deck": {}
         }, (error, result) => {
             if (error) {
-                response.render('/server_error.hbs', {
+                response.render('server_error.hbs', {
                     title: 'Uh oh!'
                 });
             } else {
                 // placeholder for test purposes
                 // response.send(JSON.stringify(result.ops, undefined, 2));
 
-                response.render('/new_user_success.hbs', {
+                response.render('new_user_success.hbs', {
                     title: 'Success!'
                 });
             }
