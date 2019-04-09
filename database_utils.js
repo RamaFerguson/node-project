@@ -30,7 +30,7 @@ function checkUserInDb(username, collection, database) {
     });
 }
 
-var checkLiveGameAvailable = (player1, player2, collection, database) => {
+var checkGame = (player1, player2, collection, database) => {
     return new Promise((resolve, reject) => {
         let searchPlayers = [player1.uuid, player2.uuid].sort();
         database
@@ -40,12 +40,12 @@ var checkLiveGameAvailable = (player1, player2, collection, database) => {
             })
             .toArray(function(error, result) {
                 if (error) {
-                    return reject(error);
+                    reject(error);
                 } else {
                     if (result.length === 0) {
-                        resolve(true);
+                        resolve(null);
                     }
-                    resolve(false);
+                    resolve(result[0]);
                 }
             });
     });
@@ -53,5 +53,5 @@ var checkLiveGameAvailable = (player1, player2, collection, database) => {
 
 module.exports = {
     checkUserInDb,
-    checkLiveGameAvailable
+    checkLiveGameAvailable: checkGame
 };
