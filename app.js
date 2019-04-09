@@ -12,7 +12,6 @@ app.set("view engine", "hbs");
 app.use(express.static("assets"));
 
 // cookies
-const cookieUtil = require('./cookies');
 const cookie = require('cookie');
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
