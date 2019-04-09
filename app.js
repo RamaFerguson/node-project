@@ -7,6 +7,7 @@ var app = express();
 
 // cookies
 const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 
 // add new user function
 const addUser = require('./add_user');
@@ -114,7 +115,11 @@ app.post("/logInPlayer", async function (request, response) {
                 fetchedDetails = JSON.stringify(result.ops, undefined, 2);
                 // compare hashed password with provided password
                 bcrypt.compare(password, fetchedDetails.password, function(error, result) {
-                    // res == false
+                    if (result === false) {
+                        alert("Password incorrect!");
+                    } else if (result === true) {
+
+                    }
                 });
                 response.render('new_user_success.hbs', {
                     title: 'Success!'
