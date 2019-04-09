@@ -3,61 +3,22 @@
 const Card = require("./cards");
 const Heroes = require("./heroes");
 
-const liveGames = "./live_games/";
-const deadGames = "./dead_games/";
+//const liveGames = "./live_games/";
+//const deadGames = "./dead_games/";
 
 const cardDB = require("./assets/card_db.json");
 //const keywords;
 
-module.exports = class Game {
-    constructor(player1, player2) {
-        this.filePath = `${player1.uuid}_${player2.uuid}.json`;
+class Game {
+    constructor(player1, player2, turnCount, turnLogs) {
+        //let today = new Date();
+        //this.timestamp = today.toISOString();
 
-        let today = new Date();
-        this.timestamp = today.toISOString();
+        this.player1 = player1;
+        this.player2 = player2;
 
-        this.player1 = {
-            uuid: player1.uuid,
-            life: 20,
-            hero: Heroes[`${player1.deck.hero}`].name,
-            power: Heroes[`${player1.deck.hero}`].power,
-            deck: populateDeck(player1.deck.cards),
-            hand: [],
-            field: [],
-            graveyard: [],
-            mana: 1,
-            damage: 0,
-            ready: false
-        };
-
-        this.player2 = {
-            uuid: player2.uuid,
-            life: 20,
-            hero: Heroes[`${player2.deck.hero}`].name,
-            power: Heroes[`${player2.deck.hero}`].power,
-            deck: populateDeck(player2.deck.cards),
-            hand: [],
-            field: [],
-            graveyard: [],
-            mana: 1,
-            damage: 0,
-            ready: false
-        };
-
-        shuffleDeck(this.player1.deck);
-        shuffleDeck(this.player2.deck);
-
-        while (this.player1.hand.length < 5) {
-            this.player1.hand.push(this.player1.deck.shift());
-        }
-
-        while (this.player2.hand.length < 5) {
-            this.player2.hand.push(this.player2.deck.shift());
-        }
-
-        this.turnCount = 0;
-        this.turnLogs = [];
-        this.logTurn();
+        this.turnCount = turnCount;
+        this.turnLogs = turnLogs;
     }
 
     acceptTurn(turn) {
@@ -81,12 +42,40 @@ module.exports = class Game {
     }
 
     resolveTurn() {
+        let log = [];
+
         sortField(this.player1.field);
         sortField(this.player2.field);
-        
+
+        this.player1.damage = calcDamage(this.player1.field);
+        this.player2.damage = calcDamage(this.player2.field);
+
+        log.push(calcKills("p1", this.player1, this.player2));
+        log.push(calcKills("p2", this.player2, this.player1));
+
+        log.push(dealDamage("p1", this.player1, this.player2));
+        log.push(dealDamage("p2", this.player2, this.player1));
+        log.push(Heroes[this.player1.hero].power(player2));
+        log.push(Heroes[this.player2.hero].power(player1));
+
+        this.player1.damage = 0;
+        this.player2.damage = 0;
+
+        if (this.player1.mana < 5) {
+            this.player1.mana++;
+        }
+        if (this.player2.mana < 5) {
+            this.player2.mana++;
+        }
+
+        this.player1.ready = false;
+        this.player2.ready = false;
+        this.turnCount++;
+
+        this.logTurn(log);
     }
 
-    logTurn() {
+    logTurn(log) {
         let turn = {
             turn: this.turnCount,
             p1_state: [
@@ -102,7 +91,8 @@ module.exports = class Game {
                 this.player2.hand,
                 this.player2.field,
                 this.player2.graveyard
-            ]
+            ],
+            log: log
         };
         this.turnLogs.push(turn);
     }
@@ -112,8 +102,7 @@ var populateDeck = playerDeck => {
     let deck = [];
     let index = 0;
 
-    // const instead of let?
-    for (const cardID of playerDeck) {
+    for (let cardID of playerDeck) {
         let card = new Card(cardDB[cardID], index);
         deck.push(card);
         index++;
@@ -143,16 +132,16 @@ var sortField = field => {
 };
 
 var sortFieldHealth = (prev, next) => {
-    return next.health - prev.health;
+    return -(next.health - prev.health);
 };
 
 var sortFieldAttack = (prev, next) => {
     if (prev.health === next.health) {
         if (prev.attack < next.attack) {
-            return 1;
+            return -1;
         }
         if (prev.attack > next.attack) {
-            return -1;
+            return 1;
         }
     }
     return 0;
@@ -160,14 +149,83 @@ var sortFieldAttack = (prev, next) => {
 
 var sortFieldWall = (prev, next) => {
     if (prev.keywords.includes("wall") && !next.keywords.includes("wall")) {
-        return 1;
+        return -1;
     }
     if (!prev.keywords.includes("wall") && next.keywords.includes("wall")) {
-        return -1;
+        return 1;
     }
     return 0;
 };
 
+var calcDamage = field => {
+    let damage = field
+        .map(card => {
+            return card.attack;
+        })
+        .reduce((total, next) => {
+            return total + next;
+        });
+
+    let keywords = field
+        .map(card => {
+            return card.keywords;
+        })
+        .flat();
+
+    for (let word of keywords) {
+        if (word === "swarm") {
+            damage + field.length;
+        }
+    }
+    return damage;
+};
+
+var calcKills = (pID, defender, attacker) => {
+    let log = [];
+    let hasStab = attacker.field
+        .map(card => {
+            return card.keywords;
+        })
+        .flat()
+        .includes("stab");
+    let slimeCount = defender.field
+        .map(card => {
+            return card.keywords;
+        })
+        .flat();
+
+    for (let word in slimeCount) {
+        if (word === "slime") {
+            attacker.damage -= 4;
+        }
+    }
+
+    for (let card of defender) {
+        if (card.keywords.includes("sneak")) {
+            continue;
+        } else if (attacker.damage >= card.health) {
+            attacker.damage -= card.health;
+            log.push(`${pID}: ${card.name} destroyed!`);
+            defender.graveyard.push(defender.field.shift());
+        } else if (attacker.damage < card.health && hasStab) {
+            log.push(`${pID}: ${card.name} stabbed!`);
+            defender.graveyard.push(defender.field.shift());
+        }
+    }
+
+    return log;
+};
+
+var dealDamage = (pID, defender, attacker) => {
+    if (defender.field.length === 0) {
+        defender.life -= attacker.damage;
+        return `${pID}: took ${attacker.damage}!`;
+    } else {
+        return `${pID}: took no damage!`;
+    }
+};
+
+/*
 var testDeck = [
     "militia",
     "militia",
@@ -203,6 +261,21 @@ while (testHand.length < 5) {
 }
 
 sortField(testHand);
-
 console.log(newDeck);
 console.log(testHand);
+console.log(
+    testHand
+        .map(card => {
+            return card.attack;
+        })
+        .reduce((total, next) => {
+            return total + next;
+        })
+);
+*/
+
+module.exports = {
+    Game: Game,
+    shuffleDeck: shuffleDeck,
+    populateDeck: populateDeck,
+}
