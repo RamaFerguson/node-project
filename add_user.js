@@ -8,17 +8,15 @@ function checkUserInDb(username, collection, database) {
         database.collection(collection).find({
             "username": username
         }, {
-            projection: {
-                "username": 1
-            }
+            "username": 1
         }).toArray(function (error, result) {
             if (error) {
                 return reject(error);
             } else {
                 if (result.length === 0) {
-                    resolve(false)
+                    resolve(false);
                 }
-                resolve(true)
+                resolve(true);
             }
         });
     });

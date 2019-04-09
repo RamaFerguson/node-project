@@ -6,6 +6,7 @@ var port = process.env.PORT || 8080;
 var app = express();
 
 // cookies
+const cookie = require('cookie');
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
@@ -118,7 +119,7 @@ app.post("/logInPlayer", async function (request, response) {
                     if (result === false) {
                         alert("Password incorrect!");
                     } else if (result === true) {
-
+                        
                     }
                 });
                 response.render('new_user_success.hbs', {
