@@ -12,7 +12,6 @@ app.set("view engine", "hbs");
 app.use(express.static("assets"));
 
 // cookies
-const cookieUtil = require('./cookies');
 const cookie = require('cookie');
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
@@ -123,7 +122,7 @@ app.post("/logInPlayer", async function(request, response) {
         });
     } else {
         // fetch hashed password on db
-        let userDetails = await addUser.returnUserDetails(username, PLAYER_COLLECTION, nodeProjectDB).catch( (error) => {
+        let userDetails = await databaseUtils.returnUserDetails(username, PLAYER_COLLECTION, nodeProjectDB).catch( (error) => {
             console.log('the catch is happening');
             response.render('server_error.hbs', {
                 title: 'Uh oh!'
