@@ -44,7 +44,7 @@ var initGame = (database, player1, player2) => {
         this.p2.hand.push(this.p2.deck.shift());
     }
 
-    let players = [p1.uuid, p2.uuid].sort()
+    let players = [p1.uuid, p2.uuid].sort();
     let gameState = game.Game(p1, p2, 0, []);
     gameState.logTurn(["Game Start!"]);
 
@@ -54,3 +54,6 @@ var initGame = (database, player1, player2) => {
     });
 };
 
+module.exports = {
+    initGame: initGame
+};
