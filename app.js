@@ -40,7 +40,7 @@ client.connect(function (err, clientObject) {
 
     // Start the application after the database connection is ready
     app.listen(port);
-    console.log("Listening on port 8080");
+    console.log("Listening to the port 8080");
 });
 
 app.post("/newPlayerAccount", async function (request, response) {
@@ -128,9 +128,9 @@ app.get('/signup', (request, response) => {
     });
 });
 
-app.get('/user', (request, response) => {
+app.get('/home', (request, response) => {
     response.render('main_user_page.hbs', {
-        title: 'user',
+        title: 'Home',
     });
 });
 
@@ -139,6 +139,13 @@ app.get('/deckbuild', (request, response) => {
         title: 'deckbuild',
     });
 });
+
+app.get('/game', (request, response) => {
+    response.render('game.hbs', {
+        title: 'deckbuild',
+    });
+})
+
 
 // Don't need this here, I moved it to line 41
 // app.listen(port, () => {

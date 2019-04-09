@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.item1 { grid-area: header; }
+.item2 { grid-area: menu; }
+.item3 { grid-area: main; }
+.item4 { grid-area: right; }
+.item5 { grid-area: footer; }
+
+.grid-container {
+  display: grid;
+  grid-template-areas:
+    'header header header header header header'
+    'main main main right right menu'
+    'footer footer footer footer footer menu';
+  grid-gap: 10px;
+  background-color: black;
+  padding: 10px;
+}
+    
+
+
+.grid-container > div {
+  background-color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  padding: 55px 0;
+  font-size: 30px;
+}
+
+body {
+  background-color: black;
+}
+</style>
+
+{{> header}}
+</head>
+<body>
+
+<br>
+<div class="grid-container">
+  <div class="item4">Hero</div>
+  <div class="item3">Health and Mana </div>  
+  <div class="item5" style="overflow: scroll">
+  </div>
+</div>
+
+<div class="grid-container">
+  <div class="item5" style="overflow: scroll">
+       <button type="button">Cards in hand</button>
+      <button type="button">Cards in hand</button>
+      <button type="button">Cards in hand</button>
+      <button type="button">Cards in hand</button>
+      <button type="button">Cards in hand</button>
+       <button type="button">Cards in hand</button>
+      <button type="button">Cards in hand</button>
+  </div>
+  <div class="item4">Hero</div>
+  <div class="item3">Health and Mana</div>  
+  <div class="item2">Deck</div>
+  <div class="item1">
+  </div>
+</div>
+
+</body>
+</html>
+
