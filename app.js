@@ -5,6 +5,9 @@ var port = process.env.PORT || 8080;
 
 var app = express();
 
+// cookies
+const cookieParser = require('cookie-parser');
+
 // uuid module to allow unique
 const uuidv1 = require("uuid/v1");
 
