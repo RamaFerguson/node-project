@@ -11,13 +11,11 @@ const cardDB = require("./assets/card_db.json");
 
 module.exports = class Game {
     constructor(player1, player2) {
-        this.filePath = `${player1.uuid}_${player2.uuid}.json`;
-
         let today = new Date();
         this.timestamp = today.toISOString();
 
         this.player1 = {
-            uuid: player1.uuid,
+            username: player1.username,
             life: 20,
             hero: Heroes[`${player1.deck.hero}`].name,
             power: Heroes[`${player1.deck.hero}`].power,
@@ -31,7 +29,7 @@ module.exports = class Game {
         };
 
         this.player2 = {
-            uuid: player2.uuid,
+            username: player2.username,
             life: 20,
             hero: Heroes[`${player2.deck.hero}`].name,
             power: Heroes[`${player2.deck.hero}`].power,
