@@ -34,8 +34,8 @@ const client = new MongoClient(uri, {
 var nodeProjectDB;
 client.connect(function (err, clientObject) {
     if (err) throw err;
-    console.log(clientObject);
-    console.log(clientObject.db);
+    // console.log(clientObject);
+    // console.log(clientObject.db);
     nodeProjectDB = clientObject.db('node_project');
 
     // Start the application after the database connection is ready
@@ -52,8 +52,8 @@ app.post("/newPlayerAccount", async function (request, response) {
     // returns False if they do not exist
     function checkUserInDb(username, collection) {
         return new Promise((resolve, reject) => {
-            console.log(username);
-            console.log(collection);
+            // console.log(username);
+            // console.log(collection);
             nodeProjectDB.collection(collection).find({
                 "username": username
             }, {
@@ -92,13 +92,12 @@ app.post("/newPlayerAccount", async function (request, response) {
             "deck": {}
         }, (error, result) => {
             if (error) {
-                response.send('unable to insert student');
+                response.send('error in insterting new user');
             } else {
                 // placeholder for test purposes
-                response.send(JSON.stringify(result.ops, undefined, 2));
+                // response.send(JSON.stringify(result.ops, undefined, 2));
 
-                // probably use this once we know db works
-                // response.send('user added successfully')
+                response.send('new user created successfully')
             }
         });
     };
