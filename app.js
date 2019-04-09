@@ -79,7 +79,9 @@ app.post("/newPlayerAccount", async function (request, response) {
     // verifying username is new
     let userExists = await checkUserInDb(username, PLAYER_COLLECTION);
     if (userExists === true) {
-        response.send('username already taken')
+        response.render('/views/user_exists.hbs', {
+            title: 'Uh oh!'
+        });
     } else {
         // adds new user to player collection
         nodeProjectDB.collection(PLAYER_COLLECTION).insertOne({
@@ -92,12 +94,16 @@ app.post("/newPlayerAccount", async function (request, response) {
             "deck": {}
         }, (error, result) => {
             if (error) {
-                response.send('error in insterting new user');
+                response.render('/views/server_error.hbs', {
+                    title: 'Uh oh!'
+                });
             } else {
                 // placeholder for test purposes
                 // response.send(JSON.stringify(result.ops, undefined, 2));
 
-                response.send('new user created successfully')
+                response.render('/views/new_user_success.hbs', {
+                    title: 'Success!'
+                });
             }
         });
     };
