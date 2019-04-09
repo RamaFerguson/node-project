@@ -22,6 +22,26 @@ function checkUserInDb(username, collection, database) {
     });
 };
 
+function returnUserDetails(username, collection, database) {
+    return new Promise((resolve, reject) => {
+        // console.log(username);
+        // console.log(collection);
+        database.collection(collection).find({
+            "username": username
+        }).toArray(function (error, result) {
+            if (error) {
+                console.log('error in returnUserDetails')
+                reject(error);
+            } else {
+                console.log('returnUserDetails worked')
+                resolve(result);
+                //JSON.stringify(result.ops, undefined, 2)
+            };
+        });
+    });
+};
+
 module.exports = {
-    checkUserInDb
+    checkUserInDb,
+    returnUserDetails
 }

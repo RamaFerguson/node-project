@@ -6,6 +6,7 @@ var port = process.env.PORT || 8080;
 var app = express();
 
 // cookies
+const cookieUtil = require('./cookies');
 const cookie = require('cookie');
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
@@ -101,40 +102,51 @@ app.post("/logInPlayer", async function (request, response) {
             title: 'Uh oh!'
         });
     } else {
-
         // fetch hashed password on db
-        nodeProjectDB.collection(PLAYER_COLLECTION).find({
-            "username": username,
-        }, {
-            "password": 1
-        }, (error, result) => {
-            if (error) {
-                response.render('server_error.hbs', {
-                    title: 'Uh oh!'
-                });
-            } else {
-                fetchedDetails = JSON.stringify(result.ops, undefined, 2);
-                // compare hashed password with provided password
-                bcrypt.compare(password, fetchedDetails.password, function(error, result) {
-                    if (result === false) {
-                        alert("Password incorrect!");
-                    } else if (result === true) {
-                        
-                    }
-                });
-                response.render('new_user_success.hbs', {
-                    title: 'Success!'
-                });
-            }
+        let userDetails = await addUser.returnUserDetails(username, PLAYER_COLLECTION, nodeProjectDB).catch( (error) => {
+            console.log('the catch is happening');
+            response.render('server_error.hbs', {
+                title: 'Uh oh!'
+            });
         });
+        console.log(userDetails[0].uuid);
+        console.log(userDetails[0].password)
 
+        // compare hashed password with provided password
+        // console.log(fetchedDetails);
+        bcrypt.compare(password, userDetails[0].password, function (error, result) {
+            if (error) {
+                console.log(error);
+            } else if (result === false) {
+                // TODO - replace this with some text on the website when i have time
+                console.log("Password incorrect!");
+                response.render('login.hbs', {
+                    title: 'Try agauin!'
+                });
+            } else if (result === true) {
+                console.log('made it to the cookie step!');
 
-        let hashedPassword = await bcrypt.compare(password, saltRounds);
-
-        // adds new user to player collection
-
+                response.cookie("id", userDetails[0].uuid);
+                response.render('main_user_page.hbs', {
+                    title: `Welcome ${userDetails[0].username}`
+                });
+                // creates a cookie using uuid
+                // cookieUtil.createCookie(userDetails[0].uuid, (error, result) => {
+                //     if (error) {
+                //         console.log('Cookie failed');
+                //     } else {
+                //         console.log('cookie successful!');
+                //         console.log(result);
+                //         response.render('main_user_page.hbs', {
+                //             title: 'Welcome!'
+                //         });
+                //     }
+                // });
+            };
+        });
     };
 });
+
 
 hbs.registerPartials(__dirname + '/views');
 hbs.registerPartials(__dirname + '/views/partials');
@@ -175,4 +187,3 @@ app.get('/deckbuild', (request, response) => {
 // Don't need this here, I moved it to line 41
 // app.listen(port, () => {
 //     console.log('Vanguard Assault is online')
-// });
