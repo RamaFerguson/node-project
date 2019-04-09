@@ -86,39 +86,39 @@ module.exports = class Game {
         sortField(this.player1.field);
         sortField(this.player2.field);
 
-        this.player1.damage = calcDamage(this.player1.field)
-        this.player2.damage = calcDamage(this.player2.field)
+        this.player1.damage = calcDamage(this.player1.field);
+        this.player2.damage = calcDamage(this.player2.field);
 
-        for (let card of this.player1.field) {
-            if (card.includes("sneak")) {
-                continue;
-            }
-            else if (player2.damage >= card.health) {
-                player2.damage -= card.health;
-                log.push(`P1: ${card.name} destroyed!`)
-                player1.field.shift()
-            }
-        }
+        log.push(calcKills("p1", this.player1, this.player2));
+        log.push(calcKills("p2", this.player2, this.player1));
+
+        log.push(dealDamage("p1", this.player1, this.player2));
+        log.push(dealDamage("p2", this.player2, this.player1));
+
+        this.player1.damage = 0;
+        this.player2.damage = 0;
+        this.logTurn(log);
+
     }
 
     logTurn(log) {
         let turn = {
-            "turn": this.turnCount,
-            "p1_state": [
+            turn: this.turnCount,
+            p1_state: [
                 this.player1.life,
                 this.player1.deck,
                 this.player1.hand,
                 this.player1.field,
                 this.player1.graveyard
             ],
-            "p2_state": [
+            p2_state: [
                 this.player2.life,
                 this.player2.deck,
                 this.player2.hand,
                 this.player2.field,
                 this.player2.graveyard
             ],
-            "log": log
+            log: log
         };
         this.turnLogs.push(turn);
     }
@@ -128,7 +128,6 @@ var populateDeck = playerDeck => {
     let deck = [];
     let index = 0;
 
-    
     for (let cardID of playerDeck) {
         let card = new Card(cardDB[cardID], index);
         deck.push(card);
@@ -184,14 +183,73 @@ var sortFieldWall = (prev, next) => {
     return 0;
 };
 
-var calcDamage = (field) => {
-    return field.map(card => {
-        return card.attack;
-    })
-    .reduce((total, next) => {
-        return total + next;
-    });
-}
+var calcDamage = field => {
+    let damage = field
+        .map(card => {
+            return card.attack;
+        })
+        .reduce((total, next) => {
+            return total + next;
+        });
+
+    let keywords = field
+        .map(card => {
+            return card.keywords;
+        })
+        .flat();
+
+    for (let word of keywords) {
+        if (word === "swarm") {
+            damage + field.length;
+        }
+    }
+    return damage;
+};
+
+var calcKills = (pID, defender, attacker) => {
+    let log = [];
+    let hasStab = attacker.field
+        .map(card => {
+            return card.keywords;
+        })
+        .flat()
+        .includes("stab");
+    let slimeCount = defender.field
+        .map(card => {
+            return card.keywords;
+        })
+        .flat();
+
+    for (let word in slimeCount) {
+        if (word === "slime") {
+            attacker.damage -= 4;
+        }
+    }
+
+    for (let card of defender) {
+        if (card.keywords.includes("sneak")) {
+            continue;
+        } else if (attacker.damage >= card.health) {
+            attacker.damage -= card.health;
+            log.push(`${pID}: ${card.name} destroyed!`);
+            defender.graveyard.push(defender.field.shift());
+        } else if (attacker.damage < card.health && hasStab) {
+            log.push(`${pID}: ${card.name} stabbed!`);
+            defender.graveyard.push(defender.field.shift());
+        }
+    }
+
+    return log;
+};
+
+var dealDamage = (pID, defender, attacker) => {
+    if (defender.field.length === 0) {
+        defender.life -= attacker.damage;
+        return `${pID}: took ${attacker.damage}!`;
+    } else {
+        return `${pID}: took no damage!`;
+    }
+};
 
 var testDeck = [
     "militia",
