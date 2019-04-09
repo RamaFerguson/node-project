@@ -7,17 +7,14 @@ function checkUserInDb(username, collection, database) {
         // console.log(collection);
         database
             .collection(collection)
-            .find(
-                {
-                    username: username
-                },
-                {
-                    projection: {
-                        username: 1
-                    }
-                }
-            )
-            .toArray(function(error, result) {
+            .find({
+                username: username
+            }, {
+
+                username: 1
+
+            })
+            .toArray(function (error, result) {
                 if (error) {
                     return reject(error);
                 } else {
@@ -39,15 +36,12 @@ function checkUserInDb(username, collection, database) {
         // console.log(collection);
         database
             .collection(collection)
-            .find(
-                {
-                    username: username
-                },
-                {
-                    username: 1
-                }
-            )
-            .toArray(function(error, result) {
+            .find({
+                username: username
+            }, {
+                username: 1
+            })
+            .toArray(function (error, result) {
                 if (error) {
                     return reject(error);
                 } else {
@@ -69,7 +63,7 @@ function returnUserDetails(username, collection, database) {
             .find({
                 username: username
             })
-            .toArray(function(error, result) {
+            .toArray(function (error, result) {
                 if (error) {
                     console.log("error in returnUserDetails");
                     reject(error);
@@ -90,7 +84,7 @@ var checkGame = (player1, player2, collection, database) => {
             .find({
                 players: searchPlayers
             })
-            .toArray(function(error, result) {
+            .toArray(function (error, result) {
                 if (error) {
                     reject(error);
                 } else {
