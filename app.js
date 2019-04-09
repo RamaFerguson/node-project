@@ -123,7 +123,7 @@ app.post("/logInPlayer", async function(request, response) {
         });
     } else {
         // fetch hashed password on db
-        let userDetails = await addUser.returnUserDetails(username, PLAYER_COLLECTION, nodeProjectDB).catch( (error) => {
+        let userDetails = await databaseUtils.returnUserDetails(username, PLAYER_COLLECTION, nodeProjectDB).catch( (error) => {
             console.log('the catch is happening');
             response.render('server_error.hbs', {
                 title: 'Uh oh!'
