@@ -265,6 +265,7 @@ var dealDamage = (pID, defender, attacker) => {
     }
 };
 
+/*
 var testDeck = [
     "militia",
     "militia",
@@ -311,3 +312,4 @@ console.log(
             return total + next;
         })
 );
+*/
