@@ -3,8 +3,8 @@
 const Card = require("./cards");
 const Heroes = require("./heroes");
 
-const liveGames = "./live_games/";
-const deadGames = "./dead_games/";
+//const liveGames = "./live_games/";
+//const deadGames = "./dead_games/";
 
 const cardDB = require("./assets/card_db.json");
 //const keywords;
