@@ -22,7 +22,40 @@
 }
 
 </style>
+<script>
 
+
+    var deck = {
+        hero: "",
+        cards: []
+    }
+    
+    function addCard(key) {
+        if (deck.cards.length < 25) {
+            deck.cards.push(`${key}`)
+        }
+        document.getElementById("cards").innerHTML = deck.cards.join(`\n`)
+    }
+
+    function removeCard(key) {
+        if (deck.cards.includes(`${key}`)) {
+            deck.cards.splice(deck.cards.lastIndexOf(`${key}`), 1)
+        }
+        document.getElementById("cards").innerHTML = deck.cards.join(`\n`)
+    }
+
+    function changeHero(key) {
+        deck.hero = `${key}`;
+        document.getElementById("hero").innerHTML =
+        `Your Hero is: ${heroes[deck.hero].name}`;
+        document.getElementById("heroDesc").innerHTML = `${heroes[deck.hero].desc}`
+    }
+
+    function test() {
+        console.log(deck)
+    }
+
+</script>
 
 <body>
 
@@ -32,25 +65,18 @@
     <h1 style="color:white; text-align:right" id="hero">Choose a Hero !</h1>
     <br>
     <div id="wrapper">
-        <button onclick="lightlord()"><img src="/cards/lightlord_francis.jpg"></button>
-        <button onclick="brodia()"><img src="/cards/brodia.jpg"></button>
-        <button onclick="bats()"><img src="/cards/100bats.jpg"></button>
-        <button onclick="guuch()"><img src="/cards/guuch.jpg"></button>
-        <button onclick="brainum()"><img src="/cards/brainum.jpg"></button>
+        {{{generateHeroes heroes}}}
         <p id="heroDesc" style="text-align:right"></p>
     </div>
-    <h1 style="text-align: right; color:white">Your Current Deck !</h1><br>
-    
-    
 
+    <h1 style="text-align: right; color:white">Your Current Deck !</h1><br>
     <button type="button" style="float: right" onclick="test()">Confirm Deck?</button><br>
 
-    
     <br>
     <div class="deck">
         {{{generateDeckCards cardKeys}}}
     </div>
-<div style="background-color:lightblue;height:600px;width:300px;overflow:scroll;padding:50px;float:right;"></div>
+<div style="background-color:lightblue;height:600px;width:300px;overflow:scroll;padding:50px;float:right;" id="cards"></div>
 </body>
 
 

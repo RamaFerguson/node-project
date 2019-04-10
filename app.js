@@ -386,16 +386,27 @@ hbs.registerHelper("generateDeckCards", cardKeys => {
     let cards = [];
 
     for (let key of cardKeys) {
-        let cardButton = `<button type="button" onclick="deck.cards.push(${key})" oncontextmenu="deck.cards.splice(${(deck.cards.lastIndexOf(
-            key
-        ),
-        1)})">
+        let cardButton = `<button type="button" onclick="addCard(\'${key}\')">
         <img src="/cards/${key}.jpg" alt="${cardDB[key].name}">
         </button>`;
         cards.push(cardButton);
     }
 
-    return cards.join(`\n`)
+    return cards.join(`\n`);
+});
+
+hbs.registerHelper("generateHeroes", heroes => {
+    let heroKeys = Object.keys(heroes);
+    let heroButtons = [];
+
+    for (let key of heroKeys) {
+        let heroButton = `<button type="button" onclick="changeHero(\'${key}\')">
+        <img src="/cards/${key}.jpg" alt="${heroes[key].name}">
+        </button>`;
+        heroButtons.push(heroButton);
+    }
+
+    return heroButtons
 });
 
 app.get("/deckbuild", async (request, response) => {
@@ -410,7 +421,10 @@ app.get("/deckbuild", async (request, response) => {
         title: "deckbuild",
         heroes: heroes,
         cardKeys: Object.keys(cardDB),
-        deck: playerDetails.deck
+        deck: {
+            hero: playerDetails[0].deck.hero,
+            cards: playerDetails[0].deck.cards
+        }
     });
 });
 
