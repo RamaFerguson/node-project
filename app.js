@@ -399,7 +399,7 @@ hbs.registerHelper("generateDeckCards", cardKeys => {
         let cardButton = `<button type="button" onclick="addCard(\'${key}\')">
         <img src="/cards/${key}.jpg" alt="${cardDB[key].name}">
         </button>`;
-        key.push(cardButton);
+        cards.push(cardButton);
     }
     return cards.join(`\n`);
 });
