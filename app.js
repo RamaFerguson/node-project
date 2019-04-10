@@ -362,16 +362,8 @@ hbs.registerHelper("generateDeckCards", cardKeys => {
         let cardButton = `<button type="button" onclick="addCard(\'${key}\')">
         <img src="/cards/${key}.jpg" alt="${cardDB[key].name}">
         </button>`;
-        cards.push(cardButton);
+        key.push(cardButton);
     }
-    currentGame[0].gameState.field = currentGame[0].gameState.hand;
-    currentGame[0].gameState.hand = [];
-    // let turnBuffer = {
-    //     hand: [],
-    //     deck: currentGame[0].gameState[currentPlayer].deck,
-    //     field: currentGame[0].gameState[currentPlayer].hand
-    // }
-    // let endTurn = await gameEngine.updateTurn(currentGame, currentPlayer, turnBuffer)
     console.log('aha')
 });
 
@@ -422,6 +414,9 @@ app.get("/deckbuild", async (request, response) => {
         playerCollection,
         nodeProjectDB
     );
+    console.log(playerDetails);
+    console.log(playerDetails[0]);
+    
 
     response.render("deckbuild.hbs", {
         title: "deckbuild",
