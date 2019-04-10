@@ -1,44 +1,34 @@
-const cardDB = "./card_db.json"
-//const Heroes = "./heroes.js"
-
-let deck = {
+var deck = {
     hero: "",
     cards: []
 };
-function lightlord() {
-    deck.hero = "lightlord";
-    document.getElementById("hero").innerHTML =
-        `Your Hero is: ${heroes[deck.hero].name}`;
-    document.getElementById("heroDesc").innerHTML = `${heroes[deck.hero].desc}`
+
+function addCard(key) {
+    if (deck.cards.length < 25) {
+        deck.cards.push(`${key}`);
+    }
+    document.getElementById("cards").innerHTML = deck.cards.join(`\n`);
 }
 
-function brodia() {
-    deck.hero = "brodia";
-    document.getElementById("hero").innerHTML =
-        "Your Hero is: Brodia, the Vanguard";
-}
-function bats() {
-    deck.hero = "hundred_bats";
-    document.getElementById("hero").innerHTML = "Your Hero is: 100 bats";
-}
-function guuch() {
-    deck.hero = "guuch";
-    document.getElementById("hero").innerHTML = "Your Hero is: The Guuch";
-}
-function brainum() {
-    deck.hero = "brainum";
-    document.getElementById("hero").innerHTML = "Your Hero is: Brainum";
+function clearDeck() {
+    document.getElementById("cards").innerHTML = "";
 }
 
-function test() {
+/*
+    function removeCard(key) {
+        if (deck.cards.includes(`${key}`)) {
+            deck.cards.splice(deck.cards.lastIndexOf(`${key}`), 1)
+        }
+        document.getElementById("cards").innerHTML = deck.cards.join(`\n`)
+    }
+    */
+
+function changeHero(key, name, desc) {
+    deck.hero = `${key}`;
+    document.getElementById("hero").innerHTML = `Your Hero is: ${name}`;
+    document.getElementById("heroDesc").innerHTML = `${desc}`;
+}
+
+function confirmDeck() {
     console.log(deck);
 }
-
-function generateDeckCards() {
-    let deckButtons = [];
-
-    for (let key in Object.keys(cardDB)) {
-        let card = `<img src="/cards/${key}.jpg" alt=${cardDB[key].name}>`
-        
-    }
-};

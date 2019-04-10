@@ -22,61 +22,29 @@
 }
 
 </style>
-<script>
-
-
-    var deck = {
-        hero: "",
-        cards: []
-    }
-    
-    function addCard(key) {
-        if (deck.cards.length < 25) {
-            deck.cards.push(`${key}`)
-        }
-        document.getElementById("cards").innerHTML = deck.cards.join(`\n`)
-    }
-
-    function removeCard(key) {
-        if (deck.cards.includes(`${key}`)) {
-            deck.cards.splice(deck.cards.lastIndexOf(`${key}`), 1)
-        }
-        document.getElementById("cards").innerHTML = deck.cards.join(`\n`)
-    }
-
-    function changeHero(key, name, desc) {
-        deck.hero = `${key}`;
-        document.getElementById("hero").innerHTML =
-        `Your Hero is: ${name}`;
-        document.getElementById("heroDesc").innerHTML = `${desc}`
-    }
-
-    function test() {
-        console.log(deck)
-    }
-
-</script>
-
+<script src="/deck_scripts.js"></script>
 <body>
 
     <br>
     <h1 style="color:white; display:">Pick your cards</h1>
     <h1 style="color:white; text-align:center">Select your Hero</h1>
-    <h1 style="color:white; text-align:right" id="hero">Choose a Hero !</h1>
+    <h1 style="color:white; text-align:right" id="hero">{{oldHeroName oldHero}}</h1>
     <br>
     <div id="wrapper" style="text-align:center; display: inline-block">
         {{{generateHeroes heroes}}}
-        <h1 id="heroDesc" style="color:white; text-align:right; display: block">Your powers are strong!</h1>
+        <h1 id="heroDesc" style="color:white; text-align:right; display: block">{{oldHeroDesc oldHero}}</h1>
     </div>
 
     <h1 style="text-align: right; color:white">Your Current Deck !</h1><br>
-    <button type="button" style="float: right" onclick="test()">Confirm Deck?</button><br>
+    <button type="button" style="float: right" onclick="confirmDeck()">Confirm Deck</button>
+    <button type="button" style="float: right" onclick="window.location.replace('/deckbuild')">Undo Deck</button>
+    <button type="button" style="float: right" onclick="clearDeck()">Clear Deck</button><br>
 
     <br>
     <div class="deck">
         {{{generateDeckCards cardKeys}}}
     </div>
-<div style="background-color:lightblue;height:600px;width:300px;overflow:scroll;padding:50px;float:right;" id="cards"></div>
+<ul style="background-color:lightblue;height:600px;width:300px;overflow:scroll;padding:50px;float:right;" id="cards">{{oldDeck oldCards}}</ul>
 </body>
 
 

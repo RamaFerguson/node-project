@@ -411,6 +411,19 @@ hbs.registerHelper("generateHeroes", heroes => {
     return heroButtons;
 });
 
+hbs.registerHelper("oldHeroName", oldHero => {
+    return heroes[oldHero].name
+});
+
+hbs.registerHelper("oldHeroDesc", oldHero => {
+    return heroes[oldHero].desc
+});
+
+hbs.registerHelper("oldDeck", oldCards => {
+    return oldCards.join(`\n`)
+});
+
+
 app.get("/deckbuild", async (request, response) => {
     let playerID = request.signedCookies.id;
     let playerDetails = await databaseUtils.returnUserDetailsByUUID(
@@ -423,10 +436,8 @@ app.get("/deckbuild", async (request, response) => {
         title: "deckbuild",
         heroes: heroes,
         cardKeys: Object.keys(cardDB),
-        deck: {
-            hero: playerDetails[0].deck.hero,
-            cards: playerDetails[0].deck.cards
-        }
+        oldHero: playerDetails[0].deck.hero,
+        oldCards: playerDetails[0].deck.cards
     });
 });
 
