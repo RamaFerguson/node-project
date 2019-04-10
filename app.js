@@ -299,7 +299,11 @@ hbs.registerHelper("populateStartNewGames", (playerName, opponentNames) => {
 // creates new game
 app.get("/newGame/playerOne/:playerOne/playerTwo/:playerTwo/current/:currentPlayer", async function (request, response) {
     try {
-        // replace with however we extract opponent's username from the list
+        console.log('_____________New game creation start_____________')
+        console.log(request.params.playerOne)
+        console.log(request.params.playerTwo)
+        console.log(request.params.currentPlayer)
+
         let opponentName;
         if (request.params.playerOne === request.params.currentPlayer) {
             opponentName = request.params.playerTwo;
@@ -310,12 +314,12 @@ app.get("/newGame/playerOne/:playerOne/playerTwo/:playerTwo/current/:currentPlay
 
         let playerName = request.params.currentPlayer;
         let playerDetails = await databaseUtils.returnUserDetails(playerName, playerCollection, nodeProjectDB);
-        console.log('opponent and player details initialised!')
+        console.log('_____________opponent and player details initialised!______________')
 
         let playersArray = [
             playerName,
             opponentName
-        ]
+        ].sort();
 
         // checkGame returns null if game does not exist, and the game object if it does exist
         let game = await databaseUtils.checkGame(playersArray, liveGames, nodeProjectDB);
@@ -330,8 +334,8 @@ app.get("/newGame/playerOne/:playerOne/playerTwo/:playerTwo/current/:currentPlay
             // initialises game and saves it to liveGames collection
             console.log('made it to game === null!')
             gameEngine.initGame(nodeProjectDB, playerDetails[0], opponentDetails[0])
-            console.log('Game initialised!')
-            response.redirect(`/play/playerOne/${request.params.playerOne}/playerTwo/${request.params.playerTwo}/current/${request.params.currentPlayer}`)
+            console.log('_____________NEW Game initialised!_____________')
+            response.redirect(`/play/playerOne/${playersArray[0]}/playerTwo/${playersArray[1]}/current/${playerName}`);
         };
     } catch (error) {
         response.render('server_error.hbs', {

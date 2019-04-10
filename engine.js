@@ -2,10 +2,10 @@
 const game = require("./game");
 //const databaseUtils = require("./database_utils");
 
-//const liveGames = "./live_games/";
-//const deadGames = "./dead_games/";
+const liveGames = "liveGames";
+const deadGames = "deadGames";
 
-var initGame = (database, player1, player2) => {
+var initGame = async (database, player1, player2) => {
     let timestamp = new Date();
     console.log('timestamp: ');
     console.log(timestamp);
@@ -43,21 +43,31 @@ var initGame = (database, player1, player2) => {
     game.shuffleDeck(p1.deck);
     game.shuffleDeck(p2.deck);
 
-    while (this.p1.hand.length < 5) {
-        this.p1.hand.push(this.p1.deck.shift());
+    while (p1.hand.length < 5) {
+        p1.hand.push(p1.deck.shift());
     }
-    while (this.p2.hand.length < 5) {
-        this.p2.hand.push(this.p2.deck.shift());
+    while (p2.hand.length < 5) {
+        p2.hand.push(p2.deck.shift());
     }
 
     let players = [p1.username, p2.username].sort();
-    let gameState = game.Game(p1, p2, 0, []);
+    let gameState = new game.Game(p1, p2, 0, []);
     gameState.logTurn(["Game Start!"]);
 
-    database.collection(liveGames).insertOne({
+    await database
+    .collection(liveGames)
+    .insertOne({
         players: players,
         gameState: gameState,
         timestamp: timestamp
+    }, (error, result) => {
+        if (error) {
+            console.log('failure occured when adding new game')
+            return 'failure';
+        } else {
+            console.log('Successfully added game to live games db')
+            return 'success';
+        }
     });
 };
 
