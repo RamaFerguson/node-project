@@ -33,6 +33,7 @@ const deadGames = "deadGames";
 
 // contains functions that setup, run and finish games
 const gameEngine = require('./engine');
+const heroes = require("./heroes")
 
 // enables parsing of body json
 const bodyParser = require("body-parser");
@@ -372,7 +373,8 @@ hbs.registerHelper("populateLiveGames", (playerName, opponentNames) => {
 
 app.get("/deckbuild", (request, response) => {
     response.render("deckbuild.hbs", {
-        title: "deckbuild"
+        title: "deckbuild",
+        heroes: heroes
     });
 });
 

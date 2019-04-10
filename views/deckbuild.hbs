@@ -22,50 +22,29 @@
 }
 
 </style>
-
-<script>
-    let deck = {
-        hero: "",
-        cards: []
-    }
-    function lightlord() {
-        deck.hero = "lightlord"
-        document.getElementById("hero").innerHTML = "Your Hero is: Lightlord Francis"
-    }
-    function brodia() {
-        deck.hero = "brodia"
-        document.getElementById("hero").innerHTML = "Your Hero is: Brodia, the Vanguard"
-    }
-    function bats() {
-        deck.hero = "hundred_bats"
-        document.getElementById("hero").innerHTML = "Your Hero is: 100 bats"
-    }
-    function guuch() {
-        deck.hero = "guuch"
-        document.getElementById("hero").innerHTML = "Your Hero is: The Guuch"
-    }
-    function brainum() {
-        deck.hero = "brainum"
-        document.getElementById("hero").innerHTML = "Your Hero is: Brainum"
-    }
-</script>
+<script src="/heroes.js"></script>
+<script src="/deck_scripts.js"></script>
 
 <body>
 
     <br>
-    <h1 style="color:white">Pick your cards</h1><h1 style="color:white; text-align:center">Select your Hero</h1><br>
+    <h1 style="color:white; display:">Pick your cards</h1>
+    <h1 style="color:white; text-align:center">Select your Hero</h1>
+    <h1 style="color:white; text-align:right" id="hero">Choose a Hero !</h1>
+    <br>
     <div id="wrapper">
         <button onclick="lightlord()"><img src="/cards/lightlord_francis.jpg"></button>
         <button onclick="brodia()"><img src="/cards/brodia.jpg"></button>
         <button onclick="bats()"><img src="/cards/100bats.jpg"></button>
         <button onclick="guuch()"><img src="/cards/guuch.jpg"></button>
         <button onclick="brainum()"><img src="/cards/brainum.jpg"></button>
+        <p id="heroDesc" style="text-align:right"></p>
     </div>
     <h1 style="text-align: right; color:white">Your Current Deck !</h1><br>
-    <h1 style="color:white; text-align:right" id="hero"></h1>
+    
     
 
-    <button type="button" style="float: right" onclick="">Confirm Deck?</button><br>
+    <button type="button" style="float: right" onclick="test()">Confirm Deck?</button><br>
 
     
     <br>
