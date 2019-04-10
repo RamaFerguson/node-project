@@ -22,86 +22,29 @@
 }
 
 </style>
-
-<script>
-    let deck = {
-        hero: "",
-        cards: []
-    }
-    function lightlord() {
-        deck.hero = "lightlord"
-        document.getElementById("hero").innerHTML = "Your Hero is: Lightlord Francis"
-    }
-    function brodia() {
-        deck.hero = "brodia"
-        document.getElementById("hero").innerHTML = "Your Hero is: Brodia, the Vanguard"
-    }
-    function bats() {
-        deck.hero = "hundred_bats"
-        document.getElementById("hero").innerHTML = "Your Hero is: 100 bats"
-    }
-    function guuch() {
-        deck.hero = "guuch"
-        document.getElementById("hero").innerHTML = "Your Hero is: The Guuch"
-    }
-    function brainum() {
-        deck.hero = "brainum"
-        document.getElementById("hero").innerHTML = "Your Hero is: Brainum"
-    }
-</script>
-
+<script src="/deck_scripts.js"></script>
 <body>
 
     <br>
-    <h1 style="color:white">Pick your cards</h1><h1 style="color:white; text-align:center">Select your Hero</h1><br>
-    <div id="wrapper">
-        <button onclick="lightlord()"><img src="/cards/lightlord.jpg"></button>
-        <button onclick="brodia()"><img src="/cards/brodia.jpg"></button>
-        <button onclick="bats()"><img src="/cards/100bats.jpg"></button>
-        <button onclick="guuch()"><img src="/cards/guuch.jpg"></button>
-        <button onclick="brainum()"><img src="/cards/brainum.jpg"></button>
-    </div>
-    <h1 style="text-align: right; color:white">Your Current Deck !</h1><br>
-    <h1 style="color:white; text-align:right" id="hero"></h1>
-    
-
-    <button type="button" style="float: right" onclick="">Confirm Deck?</button><br>
-
-    
+    <h1 style="color:white; display:">Pick your cards</h1>
+    <h1 style="color:white; text-align:center">Select your Hero</h1>
+    <h1 style="color:white; text-align:right" id="hero">{{oldHeroName oldHero}}</h1>
     <br>
-            <div class="deck">
-<button type="button"><img src="/cards/black_ice.jpg"></button>
-<button type="button"><img src="/cards/champion_champignon.jpg" alt="Champignon"> </button>
-<button type="button"><img src="/cards/chwouster.jpg" alt="Chwouster"></button><br><br>
-<button type="button"><img src="/cards/cojnitive_cog.jpg" alt="Cojnitive Cog"></button>
-<button type="button"><img src="/cards/creeping_crawler.jpg" alt="Creeping Crawler"></button>
-<button type="button"><img src="/cards/dark_ladybird.jpg" alt="Dark Ladybird"></button><br><br>
-<button type="button"><img src="/cards/ebony_drakkon.jpg" alt="Ebony Drakkon"></button>
-<button type="button"><img src="/cards/enraged_dog.jpg" alt="Enraged Dog"></button>
-<button type="button"><img src="/cards/francis_gau.jpg" alt="Francis Gau"></button><br><br>
-<button type="button"><img src="/cards/grey_magician.jpg" alt="Grey Magician"></button>
-<button type="button"><img src="/cards/grim_reaper.jpg" alt="Grim Reaper"></button>
-<button type="button"><img src="/cards/hamaon_dispenser.jpg" alt="Hamaon Dispenser"></button><br><br>
-<button type="button"><img src="/cards/incogroach.jpg" alt="Incogroach"></button>
-<button type="button"><img src="/cards/kobayashi_groo.jpg" alt="Kobayashu Groo"></button>
-<button type="button"><img src="/cards/legendary_ant.jpg" alt="Legendary Ant"></button><br><br>
-<button type="button"><img src="/cards/light_slayer.jpg" alt="Light Slayer"></button>
-<button type="button"><img src="/cards/militia.jpg" alt="Militia"></button>
-<button type="button"><img src="/cards/mysterious_phelid.jpg" alt="Mysterious Phelid"></button><br><br>
-<button type="button"><img src="/cards/noisy_table.jpg" alt="Noisy Table"></button>
-<button type="button"><img src="/cards/oups27.jpg" alt="Oups27"></button>
-<button type="button"><img src="/cards/owarida.jpg" alt="Owarida"></button><br><br>
-<button type="button"><img src="/cards/protective_barzrard.jpg" alt="Protective Barzrard"></button>
-<button type="button"><img src="/cards/psion.jpg" alt="Psion"></button>
-<button type="button"><img src="/cards/ranch_rammer.jpg" alt="Ranch Rammer"></button><br><br>
-<button type="button"><img src="/cards/reckless_avandon.jpg" alt="Reckless Avandon"></button>
-<button type="button"><img src="/cards/slime_felcher.jpg" alt="Slime Felcher"></button>
-<button type="button"><img src="/cards/sturdy_wall.jpg" alt="Sturdy Wall"></button><br><br>
-<button type="button"><img src="/cards/timidape.jpg" alt="Timidape"></button>
-<button type="button"><img src="/cards/wooden_palisade.jpg" alt="Wooden Palisade"></button>
-<button type="button"><img src="/cards/ywontudei.jpg" alt="Ywontudei"></button>
+    <div id="wrapper" style="text-align:center; display: inline-block">
+        {{{generateHeroes heroes}}}
+        <h1 id="heroDesc" style="color:white; text-align:right; display: block">{{oldHeroDesc oldHero}}</h1>
     </div>
-<div style="background-color:lightblue;height:600px;width:300px;overflow:scroll;padding:50px;float:right;"></div>
+
+    <h1 style="text-align: right; color:white">Your Current Deck !</h1><br>
+    <button type="button" style="float: right" onclick="confirmDeck()">Confirm Deck</button>
+    <button type="button" style="float: right" onclick="window.location.replace('/deckbuild')">Undo Deck</button>
+    <button type="button" style="float: right" onclick="clearDeck()">Clear Deck</button><br>
+
+    <br>
+    <div class="deck">
+        {{{generateDeckCards cardKeys}}}
+    </div>
+<ul style="background-color:lightblue;height:600px;width:300px;overflow:scroll;padding:50px;float:right;" id="cards">{{oldDeck oldCards}}</ul>
 </body>
 
 
