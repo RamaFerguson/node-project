@@ -109,8 +109,6 @@ app.post("/logInPlayer", async function (request, response) {
     let username = request.body.username;
     let password = request.body.password;
 
-    let fetchedDetails;
-
     // verifying username exists
     let userExists = await databaseUtils.checkUserInDb(
         username,
@@ -181,6 +179,7 @@ app.get("/signup", (request, response) => {
 });
 
 app.get('/home', async (request, response) => {
+    // checks if a user is logged in
     if (request.signedCookies) {
         // console.log(request.signedCookies.id);
         try {
@@ -196,6 +195,26 @@ app.get('/home', async (request, response) => {
             });
         };
     };
+});
+
+hbs.registerHelper("getCurrentYear", () => {
+    return new Date().getFullYear();
+});
+
+var pages = {
+    "/index": "index",
+    "/about": "about me",
+    "/convert": "convert money here"
+};
+
+hbs.registerHelper("makeLinks", currentEndpoint => {
+    let links = [];
+    Object.entries(pages).forEach(page => {
+        if (page[0] !== currentEndpoint) {
+            links.push(`<li><a href=${page[0]}>${page[1]}</a></li>`);
+        }
+    });
+    return links.join(`\n`);
 });
 
 app.get("/deckbuild", (request, response) => {
