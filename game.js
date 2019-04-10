@@ -22,18 +22,19 @@ class Game {
     }
 
     acceptTurn(turn) {
-        if (this.player1.uuid === turn.uuid) {
+        if (this.player1.uuid === turn.uuid && this.player1.ready === false) {
             this.player1.hand = turn.hand;
             this.player1.deck = turn.deck;
             this.player1.field = turn.field;
-            this.player1.graveyard = turn.graveyard;
             this.player1.ready = turn.ready;
             return true;
-        } else if (this.player2.uuid === turn.uuid) {
+        } else if (
+            this.player2.uuid === turn.uuid &&
+            this.player2.ready === false
+        ) {
             this.player2.hand = turn.hand;
             this.player2.deck = turn.deck;
             this.player2.field = turn.field;
-            this.player2.graveyard = turn.graveyard;
             this.player2.ready = turn.ready;
             return true;
         } else {
@@ -96,7 +97,7 @@ class Game {
         };
         this.turnLogs.push(turn);
     }
-};
+}
 
 var populateDeck = playerDeck => {
     let deck = [];
@@ -277,5 +278,5 @@ console.log(
 module.exports = {
     Game: Game,
     shuffleDeck: shuffleDeck,
-    populateDeck: populateDeck,
-}
+    populateDeck: populateDeck
+};

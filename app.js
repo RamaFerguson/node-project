@@ -28,6 +28,8 @@ const saltRounds = 10;
 
 // collection that stores player data
 const PLAYER_COLLECTION = "players";
+const liveGames = "liveGames";
+const deadGames = "deadGames";
 
 // enables parsing of body json
 const bodyParser = require("body-parser");
@@ -204,11 +206,10 @@ app.get("/deckbuild", (request, response) => {
     });
 });
 
-app.get('/game', (request, response) => {
-    response.render('game.hbs', {
-        title: 'game'
-    });
+app.get("/play/<str:playerString>", (request, response) => {
+    let players = playerString.split(".")
 })
+
 // Don't need this here, I moved it to line 41
 // app.listen(port, () => {
 //     console.log('Vanguard Assault is online')
