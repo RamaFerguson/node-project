@@ -30,9 +30,14 @@ function changeHero(key, name, desc) {
 }
 
 function confirmDeck() {
-    axios({
-        method: 'post',
-        url: '/deckbuild/confirm',
-        deck: deck
-      });
+    console.log(deck);
+    if (deck.hero !== "" && deck.cards.length !== 0) {
+        axios({
+            method: "post",
+            url: "/deckbuild/confirm",
+            data: {
+                deck: deck
+            }
+        });
+    }
 }
