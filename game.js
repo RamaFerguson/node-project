@@ -1,5 +1,5 @@
 //const fs = require("fs");
-//const uuidv1 = require("uuid/v1");
+//const usernamev1 = require("username/v1");
 const Card = require("./cards");
 const Heroes = require("./heroes");
 
@@ -22,14 +22,14 @@ class Game {
     }
 
     acceptTurn(turn) {
-        if (this.player1.uuid === turn.uuid && this.player1.ready === false) {
+        if (this.player1.username === turn.username && this.player1.ready === false) {
             this.player1.hand = turn.hand;
             this.player1.deck = turn.deck;
             this.player1.field = turn.field;
             this.player1.ready = turn.ready;
             return true;
         } else if (
-            this.player2.uuid === turn.uuid &&
+            this.player2.username === turn.username &&
             this.player2.ready === false
         ) {
             this.player2.hand = turn.hand;
