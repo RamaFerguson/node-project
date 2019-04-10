@@ -44,7 +44,7 @@ var initGame = (database, player1, player2) => {
         this.p2.hand.push(this.p2.deck.shift());
     }
 
-    let players = [p1.username, p2.username];
+    let players = [p1.username, p2.username].sort();
     let gameState = game.Game(p1, p2, 0, []);
     gameState.logTurn(["Game Start!"]);
 
