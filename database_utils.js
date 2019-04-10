@@ -98,11 +98,14 @@ var checkGame = (players, collection, database) => {
             })
             .toArray(function (error, result) {
                 if (error) {
+                    console.log('error!')
                     reject(error);
                 } else {
                     if (result.length === 0) {
+                        console.log('should be null')
                         resolve(null);
                     }
+                    console.log('should be result')
                     resolve(result);
                 }
             });

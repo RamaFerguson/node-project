@@ -56,24 +56,32 @@ var fillGameButtons = (games, username) => {
     let buttons = [];
 
     for (let instance of games) {
+        console.log(instance)
         let opponent = instance.players.filter(player => {
             return player !== username;
         });
+        console.log(opponent)
+
 
         let ready;
-        if (instance.player1.username === username) {
-            ready = instance.player1.ready;
+        if (instance.gameState.player1.username === username) {
+            ready = instance.gameState.player1.ready;
         } else {
-            ready = instance.player2.ready;
+            ready = instance.gameState.player2.ready;
         }
+        console.log(ready)
 
         let link = `/play/${instance.players.join(".")}`;
+        console.log('pre')
+        console.log(buttons)
 
         buttons.push({
-            opponent: opponent,
+            opponent: opponent[0],
             ready: ready,
             link: link
         });
+        console.log('post')
+        console.log(buttons)
     }
 
     return buttons;
