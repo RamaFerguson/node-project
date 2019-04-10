@@ -45,6 +45,8 @@ app.use(
     })
 );
 
+const axios = require('axios')
+
 // mongo connection
 let mongodb = require("mongodb");
 let MongoClient = require("mongodb").MongoClient;
@@ -167,11 +169,10 @@ app.post("/logInPlayer", async function(request, response) {
     }
 });
 
-var pages = {
-    "/index": "index",
-    "/about": "about me",
-    "/convert": "convert money here"
-};
+// populates live games list
+hbs.registerHelper("getCurrentYear", () => {
+    return new Date().getFullYear();
+});
 
 hbs.registerPartials(__dirname + "/views");
 hbs.registerPartials(__dirname + "/views/partials");
