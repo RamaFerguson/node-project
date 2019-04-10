@@ -387,16 +387,16 @@ app.get("/endTurn/playerOne/:playerOne/playerTwo/:playerTwo/current/:currentPlay
     console.log('aha')
 });
 
+hbs.registerHelper("generateDeckCards", cardKeys => {
+    for (let key of cardKeys) {
+        let cardButton = `<button type="button" onclick="addCard(\'${key}\')">
+        <img src="/cards/${key}.jpg" alt="${cardDB[key].name}">
+        </button>`;
+        cards.push(cardButton);
+    }
 
-//     for (let key of cardKeys) {
-//         let cardButton = `<button type="button" onclick="addCard(\'${key}\')">
-//         <img src="/cards/${key}.jpg" alt="${cardDB[key].name}">
-//         </button>`;
-//         cards.push(cardButton);
-//     }
-
-//     return cards.join(`\n`);
-// });
+    return cards.join(`\n`);
+});
 
 hbs.registerHelper("generateHeroes", heroes => {
     let heroKeys = Object.keys(heroes);
@@ -455,21 +455,6 @@ app.get("/play/playerOne/:playerOne/playerTwo/:playerTwo/current/:currentPlayer"
     console.log(gameState)
     console.log('________current game_________')
     console.log(currentGame)
-
-    // extracting data from gameState
-    let opponentField = gameState.opponent.field;
-    let opponentLife = gameState.opponent.life;
-    let opponentMana = gameState.opponent.mana;
-    let opponentHero = gameState.opponent.hero;
-    let opponentUserName = gameState.opponent.username;
-
-    let playerField = gameState.player.field;
-    let playerLife = gameState.player.life;
-    let playerMana = gameState.player.mana;
-    let playerHero = gameState.player.hero;
-    let playerHand = gameState.player.hand;
-    let playerDeckSize = gameState.player.deck;
-
 
     console.log('____GAME STATE in RENDER____')
     console.log(gameState);
