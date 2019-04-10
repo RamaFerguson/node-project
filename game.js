@@ -11,9 +11,6 @@ const cardDB = require("./assets/card_db.json");
 
 class Game {
     constructor(player1, player2, turnCount, turnLogs) {
-        //let today = new Date();
-        //this.timestamp = today.toISOString();
-
         this.player1 = player1;
         this.player2 = player2;
 
@@ -22,7 +19,10 @@ class Game {
     }
 
     acceptTurn(turn) {
-        if (this.player1.username === turn.username && this.player1.ready === false) {
+        if (
+            this.player1.username === turn.username &&
+            this.player1.ready === false
+        ) {
             this.player1.hand = turn.hand;
             this.player1.deck = turn.deck;
             this.player1.field = turn.field;
@@ -44,6 +44,8 @@ class Game {
 
     resolveTurn() {
         let log = [];
+        this.player1.field = cardsFromArray(this.player1.field);
+        this.player2.field = cardsFromArray(this.player2.field);
 
         sortField(this.player1.field);
         sortField(this.player2.field);
@@ -72,8 +74,14 @@ class Game {
         this.player1.ready = false;
         this.player2.ready = false;
         this.turnCount++;
-
         this.logTurn(log);
+
+        this.player1.field = this.player1.field.map(card => {
+            return card.cardKey;
+        });
+        this.player2.field = this.player2.field.map(card => {
+            return card.cardKey;
+        });
     }
 
     logTurn(log) {
@@ -99,17 +107,15 @@ class Game {
     }
 }
 
-var populateDeck = playerDeck => {
-    let deck = [];
-    let index = 0;
+var cardsFromArray = cardArray => {
+    let newCards = [];
 
-    for (let cardID of playerDeck) {
-        let card = new Card(cardDB[cardID], index);
-        deck.push(card);
-        index++;
+    for (let cardKey of cardArray) {
+        let card = new Card(cardDB[cardKey], cardKey);
+        newCards.push(card);
     }
 
-    return deck;
+    return newCards;
 };
 
 var shuffleDeck = deck => {
@@ -278,5 +284,5 @@ console.log(
 module.exports = {
     Game: Game,
     shuffleDeck: shuffleDeck,
-    populateDeck: populateDeck
+    cardsFromArray
 };
