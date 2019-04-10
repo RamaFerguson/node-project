@@ -1,11 +1,11 @@
 {
     "players": [
-        "gays",
+        "gaygay",
         "brackish"
     ],
     "gameState": {
         "player1": {
-            "username": "gays",
+            "username": "gaygay",
             "life": 20,
             "hero": "lightlord",
             "deck": [

@@ -169,30 +169,6 @@ var pages = {
     "/convert": "convert money here"
 };
 
-hbs.registerHelper("populateStartNewGames", () => {
-    let playerID = request.signedCookies.id;
-    let playerDetails = await databaseUtils.returnUserDetailsByUUID(playerID, playerCollection, nodeProjectDB);
-    let arrayAllPlayers = await databaseUtils.returnAllEntriesFromCollection(playerCollection, nodeProjectDB);
-    let arrayAllUsernames = [];
-    for (let players of arrayAllPlayers){
-        arrayAllUsernames.push(players.username);
-    }
-    console.log(arrayAllUsernames);
-
-    // get array of which players the user has started a game with
-    let gamesArray = await databaseUtils.checkGame(playerDetails[0].username, liveGames, nodeProjectDB);
-    if (game !== null) {
-        // TODO - what to do if game exists
-        console.log('Game already exists!')
-    }
-
-    // replace with however we extract opponent's username from the list
-    let opponentName = request.body.opponentUserName;
-    let opponentDetails = await databaseUtils.returnUserDetails(opponentName, playerCollection, nodeProjectDB);
-
-
-});
-
 // creates new game
 app.post("/newGame", async function (request, response) {
     try {
@@ -260,6 +236,8 @@ app.get("/login", (request, response) => {
     });
 });
 
+
+
 app.get("/signup", (request, response) => {
     response.render("signup.hbs", {
         title: "Sign Up"
@@ -271,11 +249,42 @@ app.get('/home', async (request, response) => {
     if (request.signedCookies) {
         // console.log(request.signedCookies.id);
         try {
-            let userDetails = await databaseUtils.returnUserDetailsByUUID(request.signedCookies.id, playerCollection, nodeProjectDB);
-            let username = await userDetails[0].username
+            let playerID = request.signedCookies.id;
+            let playerDetails = await databaseUtils.returnUserDetailsByUUID(playerID, playerCollection, nodeProjectDB);
+            let playerUserName = playerDetails[0].username;
+
+            // logic for populating live games list
+            let arrayAllPlayers = await databaseUtils.returnAllEntriesFromCollection(playerCollection, nodeProjectDB);
+            let arrayAllUsernames = [];
+            for (let players of arrayAllPlayers) {
+                arrayAllUsernames.push(players.username);
+            }
+            console.log(arrayAllUsernames);
+
+            // now that we have the list of all users, we want to compare with the list of active games that user has
+            // get array of which players the user has started a game with
+            let gamesArray = await databaseUtils.checkGame([playerUserName], liveGames, nodeProjectDB);
+            console.log(gamesArray)
+
+            let liveGamesOpponentsArray = gameEngine.fillGameButtons(gamesArray, playerUserName);
+            // let newGamesOpponentsArray =
+            console.log(liveGamesOpponentsArray)
+
+            let liveOpponentsNames = liveGamesOpponentsArray.map(button => {
+                return button.opponent
+            })
+            console.log(liveOpponentsNames)
+
+            let difference = arrayAllUsernames.filter((user) => {
+                if (!liveOpponentsNames.includes(user)) {
+                    return user
+                }
+            });
+            console.log(difference);
+
             response.render('main_user_page.hbs', {
                 title: 'Home',
-                username: username
+                username: playerDetails[0].username
             });
         } catch (error) {
             response.render('server_error.hbs', {
@@ -284,6 +293,34 @@ app.get('/home', async (request, response) => {
         };
     };
 });
+
+// hbs.registerHelper("populateStartNewGames", async (playerID) => {
+//     let playerID = request.signedCookies.id;
+//     let playerDetails = await databaseUtils.returnUserDetailsByUUID(playerID, playerCollection, nodeProjectDB);
+//     let arrayAllPlayers = await databaseUtils.returnAllEntriesFromCollection(playerCollection, nodeProjectDB);
+//     let arrayAllUsernames = [];
+//     for (let players of arrayAllPlayers){
+//         arrayAllUsernames.push(players.username);
+//     }
+//     console.log(arrayAllUsernames);
+
+
+
+
+
+// // get array of which players the user has started a game with
+// let gamesArray = await databaseUtils.checkGame(playerDetails[0].username, liveGames, nodeProjectDB);
+// if (game !== null) {
+//     // TODO - what to do if game exists
+//     console.log('Game already exists!')
+// }
+
+// // replace with however we extract opponent's username from the list
+// let opponentName = request.body.opponentUserName;
+// let opponentDetails = await databaseUtils.returnUserDetails(opponentName, playerCollection, nodeProjectDB);
+
+
+// });
 
 // hbs.registerHelper("getCurrentYear", () => {
 //     return new Date().getFullYear();

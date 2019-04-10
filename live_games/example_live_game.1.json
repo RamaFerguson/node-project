@@ -1,11 +1,11 @@
 {
     "players": [
-        "gays",
-        "brackish"
+        "gaygay",
+        "jin_kisaragi"
     ],
     "gameState": {
         "player1": {
-            "username": "gays",
+            "username": "gaygay",
             "life": 20,
             "hero": "lightlord",
             "deck": [
@@ -43,7 +43,7 @@
             "ready": false
         },
         "player2": {
-            "username": "brackish",
+            "username": "jin_kisaragi",
             "life": 20,
             "hero": "hundred_bats",
             "deck": [
