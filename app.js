@@ -359,25 +359,17 @@ hbs.registerHelper("populateLiveGames", (playerName, opponentNames) => {
 });
 
 hbs.registerHelper("generateDeckCards", cardKeys => {
+    let cards = []
+
     for (let key of cardKeys) {
         let cardButton = `<button type="button" onclick="addCard(\'${key}\')">
         <img src="/cards/${key}.jpg" alt="${cardDB[key].name}">
         </button>`;
-        key.push(cardButton);
+        cards.push(cardButton);
     }
-    console.log('aha')
+    
+    return cards.join(`\n`);
 });
-
-
-//     for (let key of cardKeys) {
-//         let cardButton = `<button type="button" onclick="addCard(\'${key}\')">
-//         <img src="/cards/${key}.jpg" alt="${cardDB[key].name}">
-//         </button>`;
-//         cards.push(cardButton);
-//     }
-
-//     return cards.join(`\n`);
-// });
 
 hbs.registerHelper("generateHeroes", heroes => {
     let heroKeys = Object.keys(heroes);
