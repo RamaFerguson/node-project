@@ -7,6 +7,8 @@ const game = require("./game");
 
 var initGame = (database, player1, player2) => {
     let timestamp = new Date();
+    console.log('timestamp: ');
+    console.log(timestamp);
 
     let p1 = {
         username: player1.username,
@@ -20,6 +22,8 @@ var initGame = (database, player1, player2) => {
         damage: 0,
         ready: false
     };
+    console.log('p1: ');
+    console.log(p1);
 
     let p2 = {
         username: player2.username,
@@ -33,6 +37,8 @@ var initGame = (database, player1, player2) => {
         damage: 0,
         ready: false
     };
+    console.log('p2: ');
+    console.log(p2);
 
     game.shuffleDeck(p1.deck);
     game.shuffleDeck(p2.deck);

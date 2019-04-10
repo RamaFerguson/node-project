@@ -40,6 +40,7 @@ function returnUserDetails(username, collection, database) {
                     reject(error);
                 } else {
                     console.log("returnUserDetails worked");
+                    console.log(result)
                     resolve(result);
                     //JSON.stringify(result.ops, undefined, 2)
                 }
@@ -78,10 +79,11 @@ function returnUserDetailsByUUID(uuid, collection, database) {
             })
             .toArray(function (error, result) {
                 if (error) {
-                    console.log("error in returnUserDetails");
+                    console.log("error in returnUserDetailsbyUUID");
                     reject(error);
                 } else {
-                    console.log("returnUserDetails worked");
+                    console.log("returnUserDetailsbyUUID worked");
+                    console.log(result)
                     resolve(result);
                     //JSON.stringify(result.ops, undefined, 2)
                 }
@@ -94,20 +96,25 @@ var checkGame = (players, collection, database) => {
         database
             .collection(collection)
             .find({
-                players: { $all: players }
+                players: {
+                    $all: players
+                }
             })
             .toArray(function (error, result) {
                 if (error) {
                     console.log('error!')
                     reject(error);
                 } else {
+                    console.log('checkGame result: ')
+                    console.log(result)
                     if (result.length === 0) {
                         console.log('should be null')
                         resolve(null);
-                    }
-                    console.log('should be result')
-                    resolve(result);
-                }
+                    } else {
+                        console.log('should be result')
+                        resolve(result);
+                    };
+                };
             });
     });
 };
