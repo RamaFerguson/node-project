@@ -226,8 +226,10 @@ app.get('/home', async (request, response) => {
             let newGameOpponentsNames;
             let liveOpponentsNames;
             // null means there are no live games, so can make a new game with anyone
-            if (gamesArray === null && typeof (gamesArray) === "object") {
-                newGameOpponentsNames = arrayAllUsernames.filter(user => user !== playerUserName);
+            if (gamesArray === null && typeof gamesArray === "object") {
+                newGameOpponentsNames = arrayAllUsernames.filter(
+                    user => user !== playerUserName
+                );
                 // otherwise have to split the two lists
             } else {
 
@@ -353,17 +355,16 @@ app.get("/newGame/playerOne/:playerOne/playerTwo/:playerTwo/current/:currentPlay
 hbs.registerHelper("populateLiveGames", (playerName, opponentNames) => {
     let links = [];
     opponentNames.forEach(opponentName => {
-        // console.log('try!! nee')
-        if (playerName < opponentName) {
-            // links.push(`<a href="localhost:8080/play/${playerName}.${value}"> Continue fighting ${value}!</a>`);
-            links.push(`<form action ="/play/playerOne/${opponentName}/playerTwo/${playerName}/current/${playerName}">\n<input type = "submit" value = "Continue fighting ${opponentName}!"/>\n</form>`);
-        } else {
-            links.push(`<form action ="/play/playerOne/${playerName}/playerTwo/${opponentName}/current/${playerName}">\n<input type = "submit" value = "Continue fighting ${opponentName}!"/>\n</form>`);
-        }
+        console.log("try!! nee");
+        links.push(
+            `<form action ="/play/${playerName}/${opponentName}">\n<input type = "submit" value = "Continue fighting ${opponentName}!"/>\n</form>`
+        );
     });
     return links.join(`\n`);
 });
 
+hbs.registerHelper("generateDeckCards", cardKeys => {
+    let cards = [];
 app.get("/endTurn/playerOne/:playerOne/playerTwo/:playerTwo/current/:currentPlayer", async (request, response) => {
     let playerArray = [request.params.playerOne, request.params.playerTwo];
     console.log('player array: ')
@@ -444,17 +445,14 @@ app.get("/deckbuild", async (request, response) => {
     });
 });
 
-app.get("/play/playerOne/:playerOne/playerTwo/:playerTwo/current/:currentPlayer", async (request, response) => {
-    console.log(request.params)
-    let playerArray = [request.params.playerOne, request.params.playerTwo]
-    console.log('player array: ')
+app.get("/play/:player/:opponent", async (request, response) => {
+    console.log(request.params);
+    let playerArray = [request.params.player, request.params.opponent].sort();
+    console.log("player array: ");
+
     console.log(playerArray)
     let currentGame = await databaseUtils.checkGame(playerArray, liveGames, nodeProjectDB);
-    let gameState = await gameEngine.renderGame(currentGame, request.params.currentPlayer);
-    console.log('_________game state__________')
-    console.log(gameState)
-    console.log('________current game_________')
-    console.log(currentGame)
+    let gameState = await gameEngine.renderGame(currentGame, request.params.player)
 
     console.log('____GAME STATE in RENDER____')
     console.log(gameState);
