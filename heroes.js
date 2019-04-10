@@ -1,7 +1,7 @@
 module.exports = heroes = {
     lightlord: {
         name: "Lightlord Francis",
-        desc: "Kill your opponent's strongest monster every turn.",
+        desc: "Kill the strongest enemy monster every turn.",
         power: (pID, opponent) => {
             if (opponent.field.length > 0) {
                 let deadMinion = opponent.field.reduce((prev, next) => {

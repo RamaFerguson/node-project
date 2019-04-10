@@ -400,13 +400,15 @@ hbs.registerHelper("generateHeroes", heroes => {
     let heroButtons = [];
 
     for (let key of heroKeys) {
-        let heroButton = `<button type="button" onclick="changeHero(\'${key}\')">
+        let heroButton = `<button type="button" onclick="changeHero(\'${key}\', \'${
+            heroes[key].name
+        }\', \'${heroes[key].desc}\');">
         <img src="/cards/${key}.jpg" alt="${heroes[key].name}">
         </button>`;
         heroButtons.push(heroButton);
     }
 
-    return heroButtons
+    return heroButtons;
 });
 
 app.get("/deckbuild", async (request, response) => {

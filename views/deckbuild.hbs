@@ -44,11 +44,11 @@
         document.getElementById("cards").innerHTML = deck.cards.join(`\n`)
     }
 
-    function changeHero(key) {
+    function changeHero(key, name, desc) {
         deck.hero = `${key}`;
         document.getElementById("hero").innerHTML =
-        `Your Hero is: ${heroes[deck.hero].name}`;
-        document.getElementById("heroDesc").innerHTML = `${heroes[deck.hero].desc}`
+        `Your Hero is: ${name}`;
+        document.getElementById("heroDesc").innerHTML = `${desc}`
     }
 
     function test() {
@@ -64,9 +64,9 @@
     <h1 style="color:white; text-align:center">Select your Hero</h1>
     <h1 style="color:white; text-align:right" id="hero">Choose a Hero !</h1>
     <br>
-    <div id="wrapper">
+    <div id="wrapper" style="text-align:center; display: inline-block">
         {{{generateHeroes heroes}}}
-        <p id="heroDesc" style="text-align:right"></p>
+        <h1 id="heroDesc" style="color:white; text-align:right; display: block">Your powers are strong!</h1>
     </div>
 
     <h1 style="text-align: right; color:white">Your Current Deck !</h1><br>
