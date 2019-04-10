@@ -264,27 +264,32 @@ app.get('/home', async (request, response) => {
             // now that we have the list of all users, we want to compare with the list of active games that user has
             // get array of which players the user has started a game with
             let gamesArray = await databaseUtils.checkGame([playerUserName], liveGames, nodeProjectDB);
-            console.log(gamesArray)
+            // console.log(gamesArray)
 
             let liveGamesOpponentsArray = gameEngine.fillGameButtons(gamesArray, playerUserName);
-            // let newGamesOpponentsArray =
-            console.log(liveGamesOpponentsArray)
+            // console.log('live games opponents array: ')
+            // console.log(liveGamesOpponentsArray)
 
             let liveOpponentsNames = liveGamesOpponentsArray.map(button => {
                 return button.opponent
             })
-            console.log(liveOpponentsNames)
+            // console.log('live opponents names: ')
+            // console.log(liveOpponentsNames)
 
-            let difference = arrayAllUsernames.filter((user) => {
+            // TODO also remove your own username
+            let newGameOpponentsNames = arrayAllUsernames.filter((user) => {
                 if (!liveOpponentsNames.includes(user)) {
                     return user
                 }
             });
-            console.log(difference);
+            console.log('newGameOpponentsNames: ')
+            console.log(newGameOpponentsNames);
 
             response.render('main_user_page.hbs', {
                 title: 'Home',
-                username: playerDetails[0].username
+                username: playerDetails[0].username,
+                newOpponents: newGameOpponentsNames,
+                liveOpponents: liveOpponentsNames
             });
         } catch (error) {
             response.render('server_error.hbs', {
@@ -294,15 +299,27 @@ app.get('/home', async (request, response) => {
     };
 });
 
-// hbs.registerHelper("populateStartNewGames", async (playerID) => {
-//     let playerID = request.signedCookies.id;
-//     let playerDetails = await databaseUtils.returnUserDetailsByUUID(playerID, playerCollection, nodeProjectDB);
-//     let arrayAllPlayers = await databaseUtils.returnAllEntriesFromCollection(playerCollection, nodeProjectDB);
-//     let arrayAllUsernames = [];
-//     for (let players of arrayAllPlayers){
-//         arrayAllUsernames.push(players.username);
-//     }
-//     console.log(arrayAllUsernames);
+hbs.registerHelper("populateStartNewGames", (playerName, opponentNames) => {
+    let links = [];
+    opponentNames.forEach(value => {
+
+        // links.push(`<a href="localhost:8080/play/${playerName}.${value}">Fight ${value}!</a>`);
+        links.push(`<form action ="/play/player/${playerName}/opponent/${value}">\n<input type = "submit" value = "Fight ${value}!"/>\n</form>`);
+
+    });
+    return links.join(`\n`);
+});
+
+hbs.registerHelper("populateLiveGames", (playerName, opponentNames) => {
+    let links = [];
+    opponentNames.forEach(value => {
+
+        // links.push(`<a href="localhost:8080/play/${playerName}.${value}"> Continue fighting ${value}!</a>`);
+        links.push(`<form action ="/play/player/${playerName}/opponent/${value}">\n<input type = "submit" value = "Continue fighting ${value}!"/>\n</form>`);
+
+    });
+    return links.join(`\n`);
+});
 
 
 
@@ -348,8 +365,13 @@ app.get("/deckbuild", (request, response) => {
     });
 });
 
-app.get("/play/<str:playerString>", (request, response) => {
-    let players = playerString.split(".")
+app.get("/play/player/:player/opponent/:opponent", (request, response) => {
+    // let players = playerString.split("-")
+    console.log(request.params)
+    response.render("game.hbs", {
+        title: "Fight!"
+    });
+    
 })
 
 // Don't need this here, I moved it to line 41
