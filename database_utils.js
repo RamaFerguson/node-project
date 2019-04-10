@@ -82,13 +82,12 @@ function returnUserDetails(username, collection, database) {
     });
 }
 
-var checkGame = (player1, player2, collection, database) => {
+var checkGame = (players, collection, database) => {
     return new Promise((resolve, reject) => {
-        let searchPlayers = [player1.uuid, player2.uuid].sort();
         database
             .collection(collection)
             .find({
-                players: searchPlayers
+                players: { $all: players }
             })
             .toArray(function(error, result) {
                 if (error) {
@@ -97,7 +96,7 @@ var checkGame = (player1, player2, collection, database) => {
                     if (result.length === 0) {
                         resolve(null);
                     }
-                    resolve(result[0]);
+                    resolve(result);
                 }
             });
     });
