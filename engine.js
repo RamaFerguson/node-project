@@ -63,7 +63,10 @@ var initGame = (database, player1, player2) => {
 
 var fillGameButtons = (games, username) => {
     let buttons = [];
+    // potentially check for null
+    // if (games === null && typeof(games) === "object"){
 
+    // }
     for (let instance of games) {
         // console.log(instance)
         let opponent = instance.players.filter(player => {
@@ -80,6 +83,7 @@ var fillGameButtons = (games, username) => {
         }
         // console.log(ready)
 
+        // TODO - update this to current link
         let link = `/play/${instance.players.join(".")}`;
         // console.log('pre')
         // console.log(buttons)
@@ -108,7 +112,15 @@ var updateTurn = (currentGame, player, turnBuffer) => {
 };
 
 var renderGame = (currentGame, username) => {
-    let turnLog = currentGame.turnLog;
+    console.log('Current game: ')
+    console.log(currentGame)
+    console.log('currentGame[0].gameState: ')
+    console.log(currentGame[0].gameState)
+    console.log('Username: ')
+    console.log(username)
+    let turnLog = currentGame[0].gameState.turnLog;
+    console.log('Turn log: ')
+    console.log(turnLog)
 
     let opponent = {
         field: [],

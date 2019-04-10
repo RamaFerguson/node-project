@@ -150,7 +150,9 @@ app.post("/logInPlayer", async function (request, response) {
             } else if (result === true) {
                 console.log('made it to the cookie step!');
                 // console.log(UserDetails[0].uuid)
-                response.cookie("id", userDetails[0].uuid, {signed:true});
+                response.cookie("id", userDetails[0].uuid, {
+                    signed: true
+                });
                 response.redirect('/home');
             };
         });
@@ -217,30 +219,58 @@ app.get('/home', async (request, response) => {
             // now that we have the list of all users, we want to compare with the list of active games that user has
             // get array of which players the user has started a game with
             let gamesArray = await databaseUtils.checkGame([playerUserName], liveGames, nodeProjectDB);
-            // console.log(gamesArray)
+            console.log(gamesArray)
 
-            let liveGamesOpponentsArray = gameEngine.fillGameButtons(gamesArray, playerUserName);
-            console.log('live games opponents array: ')
-            console.log(liveGamesOpponentsArray)
+            let newGameOpponentsNames;
+            let liveOpponentsNames;
+            // null means there are no live games, so can make a new game with anyone
+            if (gamesArray === null && typeof (gamesArray) === "object") {
+                newGameOpponentsNames = arrayAllUsernames.filter(user => user !== playerUserName);
+            // otherwise have to split the two lists
+            } else {
 
-            let liveOpponentsNames = liveGamesOpponentsArray.map(button => {
-                return button.opponent
-            })
-            console.log('live opponents names: ')
-            console.log(liveOpponentsNames)
+                let liveGamesOpponentsArray = gameEngine.fillGameButtons(gamesArray, playerUserName);
+                console.log('live games opponents array: ')
+                console.log(liveGamesOpponentsArray)
 
-            // TODO also remove your own username
-            let newGameOpponentsNames = arrayAllUsernames.filter((user) => {
-                if (!liveOpponentsNames.includes(user)) {
-                    return user
+                liveOpponentsNames = liveGamesOpponentsArray.map(button => {
+                    return button.opponent
+                })
+                console.log('live opponents names: ')
+                console.log(liveOpponentsNames)
+
+                // list of users to exclude from being able to make new games with
+                let excludeList = [];
+                // console.log(excludeList)
+                for (let opponent of liveOpponentsNames){
+                    excludeList.push(opponent);
                 }
-            });
+                // console.log(excludeList)
+                excludeList.push(playerUserName);
+                // console.log(excludeList);
+
+                newGameOpponentsNames = arrayAllUsernames.filter((user) => {
+                    if (!excludeList.includes(user)) {
+                        return user
+                    }
+                });
+            }
             console.log('newGameOpponentsNames: ')
             console.log(newGameOpponentsNames);
 
+            // When either of the arrays below are empty, it causes a server error
+            // console.log(newGameOpponentsNames)
+            // console.log(liveOpponentsNames)
+            if (Array.isArray(newGameOpponentsNames) === false) {
+                newGameOpponentsNames = [];
+            }
+            if (Array.isArray(liveOpponentsNames) === false) {
+                liveOpponentsNames = [];
+            }
+
             response.render('main_user_page.hbs', {
                 title: 'Home',
-                username: playerDetails[0].username,
+                username: playerUserName,
                 newOpponents: newGameOpponentsNames,
                 liveOpponents: liveOpponentsNames
             });
@@ -271,7 +301,7 @@ app.get("/newGame/playerOne/:playerOne/playerTwo/:playerTwo/current/:currentPlay
     try {
         // replace with however we extract opponent's username from the list
         let opponentName;
-        if (request.params.playerOne === request.params.currentPlayer){
+        if (request.params.playerOne === request.params.currentPlayer) {
             opponentName = request.params.playerTwo;
         } else {
             opponentName = request.params.playerOne;
@@ -281,7 +311,7 @@ app.get("/newGame/playerOne/:playerOne/playerTwo/:playerTwo/current/:currentPlay
         let playerName = request.params.currentPlayer;
         let playerDetails = await databaseUtils.returnUserDetails(playerName, playerCollection, nodeProjectDB);
         console.log('opponent and player details initialised!')
-        
+
         let playersArray = [
             playerName,
             opponentName
@@ -292,7 +322,7 @@ app.get("/newGame/playerOne/:playerOne/playerTwo/:playerTwo/current/:currentPlay
         console.log('Game :')
         console.log(game)
         console.log('Type of game:')
-        console.log(typeof(game));
+        console.log(typeof (game));
         if (game !== null) {
             // TODO - what to do if game exists
             console.log('Game already exists!')
@@ -335,6 +365,8 @@ app.get("/deckbuild", (request, response) => {
 app.get("/play/playerOne/:playerOne/playerTwo/:playerTwo/current/:currentPlayer", async (request, response) => {
     console.log(request.params)
     let playerArray = [request.params.playerOne, request.params.playerTwo]
+    console.log('player array: ')
+    console.log(playerArray)
     let currentGame = await databaseUtils.checkGame(playerArray, liveGames, nodeProjectDB);
     let gameState = await gameEngine.renderGame(currentGame, request.params.currentPlayer)
     console.log(gameState);
