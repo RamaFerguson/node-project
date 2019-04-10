@@ -122,6 +122,7 @@ var generateDeckCards = () => {
 
     for (let key in Object.keys(cardDB)) {
         let card = `<img src="/cards/${key}.jpg" alt=${cardDB[key].name}>`
+        
     }
 };
 
