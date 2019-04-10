@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/RamaFerguson/node-project#readme",
   "dependencies": {
+    "axios": "^0.18.0",
     "bcrypt": "^3.0.5",
     "cookie": "^0.3.1",
     "cookie-parser": "^1.4.4",
