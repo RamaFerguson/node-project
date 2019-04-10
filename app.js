@@ -14,7 +14,7 @@ app.use(express.static("assets"));
 // cookies
 const cookie = require('cookie');
 const cookieParser = require('cookie-parser');
-app.use(cookieParser());
+app.use(cookieParser('this_is_my_salt'));
 
 // add new user function
 const databaseUtils = require("./database_utils");
@@ -55,7 +55,7 @@ const client = new MongoClient(uri, {
 
 // Initialize connection once
 var nodeProjectDB;
-client.connect(function(err, clientObject) {
+client.connect(function (err, clientObject) {
     if (err) throw err;
     // console.log(clientObject);
     // console.log(clientObject.db);
@@ -66,7 +66,7 @@ client.connect(function(err, clientObject) {
     console.log("Listening to the port 8080");
 });
 
-app.post("/newPlayerAccount", async function(request, response) {
+app.post("/newPlayerAccount", async function (request, response) {
     let username = request.body.username;
     let password = request.body.password;
 
@@ -92,7 +92,10 @@ app.post("/newPlayerAccount", async function(request, response) {
                 wins: 0,
                 losses: 0,
                 draws: 0,
-                deck: {}
+                deck: {
+                    hero: "lightlord",
+                    cards: []
+                }
             },
             (error, result) => {
                 if (error) {
@@ -109,11 +112,9 @@ app.post("/newPlayerAccount", async function(request, response) {
     }
 });
 
-app.post("/logInPlayer", async function(request, response) {
+app.post("/logInPlayer", async function (request, response) {
     let username = request.body.username;
     let password = request.body.password;
-
-    let fetchedDetails;
 
     // verifying username exists
     let userExists = await databaseUtils.checkUserInDb(
@@ -149,23 +150,11 @@ app.post("/logInPlayer", async function(request, response) {
                 });
             } else if (result === true) {
                 console.log('made it to the cookie step!');
-
-                response.cookie("id", userDetails[0].uuid);
-                response.render('main_user_page.hbs', {
-                    title: `Welcome ${userDetails[0].username}`
+                // console.log(UserDetails[0].uuid)
+                response.cookie("id", userDetails[0].uuid, {
+                    signed: true
                 });
-                // creates a cookie using uuid
-                // cookieUtil.createCookie(userDetails[0].uuid, (error, result) => {
-                //     if (error) {
-                //         console.log('Cookie failed');
-                //     } else {
-                //         console.log('cookie successful!');
-                //         console.log(result);
-                //         response.render('main_user_page.hbs', {
-                //             title: 'Welcome!'
-                //         });
-                //     }
-                // });
+                response.redirect('/home');
             };
         });
     };
@@ -182,53 +171,7 @@ var pages = {
     "/convert": "convert money here"
 };
 
-// creates new game
-app.post("/newGame", async function (request, response) {
-    try {
-        // replace with however we extract opponent's username from the list
-        let opponentName = request.body.opponentUserName;
-        let opponentDetails = await databaseUtils.returnUserDetails(opponentName, playerCollection, nodeProjectDB);
 
-        let playerID = request.signedCookies.id;
-        let playerDetails = await databaseUtils.returnUserDetailsByUUID(playerID, playerCollection, nodeProjectDB);
-
-        // checkGame returns null if game does not exist, and the game object if it does exist
-        let game = await databaseUtils.checkGame(player, liveGames, nodeProjectDB);
-        if (game !== null) {
-            // TODO - what to do if game exists
-            console.log('Game already exists!')
-        } else {
-            // initialises game and saves it to liveGames collection
-            gameEngine.initGame(nodeProjectDB, playerDetails[0], opponentDetails[0])
-
-            // nodeProjectDB.collection(playerCollection).insertOne({
-            //         uuid: uuidv1(),
-            //         username: username,
-            //         password: hashedPassword,
-            //         wins: 0,
-            //         losses: 0,
-            //         draws: 0,
-            //         deck: {}
-            //     },
-            //     (error, result) => {
-            //         if (error) {
-            //             response.render("server_error.hbs", {
-            //                 title: "Uh oh!"
-            //             });
-            //         } else {
-            //             response.render("new_user_success.hbs", {
-            //                 title: "Success!"
-            //             });
-            //         }
-            //     }
-            // );
-        };
-    } catch (error) {
-        response.render('server_error.hbs', {
-            title: 'Error in Server'
-        });
-    };
-});
 
 
 hbs.registerPartials(__dirname + '/views');
@@ -259,7 +202,7 @@ app.get("/signup", (request, response) => {
 app.get('/home', async (request, response) => {
     // checks if a user is logged in
     if (request.signedCookies) {
-        // console.log(request.signedCookies.id);
+        console.log(request.signedCookies.id);
         try {
             let playerID = request.signedCookies.id;
             let playerDetails = await databaseUtils.returnUserDetailsByUUID(playerID, playerCollection, nodeProjectDB);
@@ -271,35 +214,63 @@ app.get('/home', async (request, response) => {
             for (let players of arrayAllPlayers) {
                 arrayAllUsernames.push(players.username);
             }
-            console.log(arrayAllUsernames);
+            // console.log(arrayAllUsernames);
 
             // now that we have the list of all users, we want to compare with the list of active games that user has
             // get array of which players the user has started a game with
             let gamesArray = await databaseUtils.checkGame([playerUserName], liveGames, nodeProjectDB);
-            // console.log(gamesArray)
+            console.log(gamesArray)
 
-            let liveGamesOpponentsArray = gameEngine.fillGameButtons(gamesArray, playerUserName);
-            // console.log('live games opponents array: ')
-            // console.log(liveGamesOpponentsArray)
+            let newGameOpponentsNames;
+            let liveOpponentsNames;
+            // null means there are no live games, so can make a new game with anyone
+            if (gamesArray === null && typeof (gamesArray) === "object") {
+                newGameOpponentsNames = arrayAllUsernames.filter(user => user !== playerUserName);
+            // otherwise have to split the two lists
+            } else {
 
-            let liveOpponentsNames = liveGamesOpponentsArray.map(button => {
-                return button.opponent
-            })
-            // console.log('live opponents names: ')
-            // console.log(liveOpponentsNames)
+                let liveGamesOpponentsArray = gameEngine.fillGameButtons(gamesArray, playerUserName);
+                console.log('live games opponents array: ')
+                console.log(liveGamesOpponentsArray)
 
-            // TODO also remove your own username
-            let newGameOpponentsNames = arrayAllUsernames.filter((user) => {
-                if (!liveOpponentsNames.includes(user)) {
-                    return user
+                liveOpponentsNames = liveGamesOpponentsArray.map(button => {
+                    return button.opponent
+                })
+                console.log('live opponents names: ')
+                console.log(liveOpponentsNames)
+
+                // list of users to exclude from being able to make new games with
+                let excludeList = [];
+                // console.log(excludeList)
+                for (let opponent of liveOpponentsNames){
+                    excludeList.push(opponent);
                 }
-            });
+                // console.log(excludeList)
+                excludeList.push(playerUserName);
+                // console.log(excludeList);
+
+                newGameOpponentsNames = arrayAllUsernames.filter((user) => {
+                    if (!excludeList.includes(user)) {
+                        return user
+                    }
+                });
+            }
             console.log('newGameOpponentsNames: ')
             console.log(newGameOpponentsNames);
 
+            // When either of the arrays below are empty, it causes a server error
+            // console.log(newGameOpponentsNames)
+            // console.log(liveOpponentsNames)
+            if (Array.isArray(newGameOpponentsNames) === false) {
+                newGameOpponentsNames = [];
+            }
+            if (Array.isArray(liveOpponentsNames) === false) {
+                liveOpponentsNames = [];
+            }
+
             response.render('main_user_page.hbs', {
                 title: 'Home',
-                username: playerDetails[0].username,
+                username: playerUserName,
                 newOpponents: newGameOpponentsNames,
                 liveOpponents: liveOpponentsNames
             });
@@ -313,25 +284,106 @@ app.get('/home', async (request, response) => {
 
 hbs.registerHelper("populateStartNewGames", (playerName, opponentNames) => {
     let links = [];
-    opponentNames.forEach(value => {
-
-        // links.push(`<a href="localhost:8080/play/${playerName}.${value}">Fight ${value}!</a>`);
-        links.push(`<form action ="/play/player/${playerName}/opponent/${value}">\n<input type = "submit" value = "Fight ${value}!"/>\n</form>`);
-
+    opponentNames.forEach(opponentName => {
+        console.log('try!!')
+        if (playerName < opponentName) {
+            // links.push(`<a href="localhost:8080/play/${playerName}.${value}"> Continue fighting ${value}!</a>`);
+            links.push(`<form action ="/newGame/playerOne/${opponentName}/playerTwo/${playerName}/current/${playerName}">\n<input type = "submit" value = "Fight ${opponentName}!"/>\n</form>`);
+        } else {
+            links.push(`<form action ="/newGame/playerOne/${playerName}/playerTwo/${opponentName}/current/${playerName}">\n<input type = "submit" value = "Fight ${opponentName}!"/>\n</form>`);
+        }
     });
     return links.join(`\n`);
+});
+
+// creates new game
+app.get("/newGame/playerOne/:playerOne/playerTwo/:playerTwo/current/:currentPlayer", async function (request, response) {
+    try {
+        console.log('_____________New game creation start_____________')
+        console.log(request.params.playerOne)
+        console.log(request.params.playerTwo)
+        console.log(request.params.currentPlayer)
+
+        let opponentName;
+        if (request.params.playerOne === request.params.currentPlayer) {
+            opponentName = request.params.playerTwo;
+        } else {
+            opponentName = request.params.playerOne;
+        }
+        let opponentDetails = await databaseUtils.returnUserDetails(opponentName, playerCollection, nodeProjectDB);
+
+        let playerName = request.params.currentPlayer;
+        let playerDetails = await databaseUtils.returnUserDetails(playerName, playerCollection, nodeProjectDB);
+        console.log('_____________opponent and player details initialised!______________')
+
+        let playersArray = [
+            playerName,
+            opponentName
+        ].sort();
+
+        // checkGame returns null if game does not exist, and the game object if it does exist
+        let game = await databaseUtils.checkGame(playersArray, liveGames, nodeProjectDB);
+        console.log('Game :')
+        console.log(game)
+        console.log('Type of game:')
+        console.log(typeof (game));
+        if (game !== null) {
+            // TODO - what to do if game exists
+            console.log('Game already exists!')
+        } else if (game === null && typeof game === "object") {
+            // initialises game and saves it to liveGames collection
+            console.log('made it to game === null!')
+            gameEngine.initGame(nodeProjectDB, playerDetails[0], opponentDetails[0])
+            console.log('_____________NEW Game initialised!_____________')
+            response.redirect(`/play/playerOne/${playersArray[0]}/playerTwo/${playersArray[1]}/current/${playerName}`);
+        };
+    } catch (error) {
+        response.render('server_error.hbs', {
+            title: 'Error in Server'
+        });
+    };
 });
 
 hbs.registerHelper("populateLiveGames", (playerName, opponentNames) => {
     let links = [];
-    opponentNames.forEach(value => {
-
-        // links.push(`<a href="localhost:8080/play/${playerName}.${value}"> Continue fighting ${value}!</a>`);
-        links.push(`<form action ="/play/player/${playerName}/opponent/${value}">\n<input type = "submit" value = "Continue fighting ${value}!"/>\n</form>`);
-
+    opponentNames.forEach(opponentName => {
+        console.log('try!! nee')
+        if (playerName < opponentName) {
+            // links.push(`<a href="localhost:8080/play/${playerName}.${value}"> Continue fighting ${value}!</a>`);
+            links.push(`<form action ="/play/playerOne/${opponentName}/playerTwo/${playerName}/current/${playerName}">\n<input type = "submit" value = "Continue fighting ${opponentName}!"/>\n</form>`);
+        } else {
+            links.push(`<form action ="/play/playerOne/${playerName}/playerTwo/${opponentName}/current/${playerName}">\n<input type = "submit" value = "Continue fighting ${opponentName}!"/>\n</form>`);
+        }
     });
     return links.join(`\n`);
 });
+
+
+
+app.get("/deckbuild", (request, response) => {
+    response.render("deckbuild.hbs", {
+        title: "deckbuild"
+    });
+});
+
+app.get("/play/playerOne/:playerOne/playerTwo/:playerTwo/current/:currentPlayer", async (request, response) => {
+    console.log(request.params)
+    let playerArray = [request.params.playerOne, request.params.playerTwo]
+    console.log('player array: ')
+    console.log(playerArray)
+    let currentGame = await databaseUtils.checkGame(playerArray, liveGames, nodeProjectDB);
+    let gameState = await gameEngine.renderGame(currentGame, request.params.currentPlayer)
+    console.log(gameState);
+    response.render("game.hbs", {
+        title: "Fight!"
+    });
+
+})
+
+
+// Don't need this here, I moved it to line 41
+// app.listen(port, () => {
+//     console.log('Vanguard Assault is online')
 
 
 

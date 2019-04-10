@@ -3,13 +3,13 @@ const game = require("./game");
 
 //const databaseUtils = require("./database_utils");
 
-//const liveGames = "./live_games/";
 const liveGames = "liveGames";
+const deadGames = "deadGames";
 
-//const deadGames = "./dead_games/";
-
-var initGame = (database, player1, player2) => {
+var initGame = async (database, player1, player2) => {
     let timestamp = new Date();
+    console.log('timestamp: ');
+    console.log(timestamp);
 
     let p1 = {
         username: player1.username,
@@ -23,6 +23,8 @@ var initGame = (database, player1, player2) => {
         damage: 0,
         ready: false
     };
+    console.log('p1: ');
+    console.log(p1);
 
     let p2 = {
         username: player2.username,
@@ -36,31 +38,46 @@ var initGame = (database, player1, player2) => {
         damage: 0,
         ready: false
     };
+    console.log('p2: ');
+    console.log(p2);
 
     game.shuffleDeck(p1.deck);
     game.shuffleDeck(p2.deck);
 
-    while (this.p1.hand.length < 5) {
-        this.p1.hand.push(this.p1.deck.shift());
+    while (p1.hand.length < 5) {
+        p1.hand.push(p1.deck.shift());
     }
-    while (this.p2.hand.length < 5) {
-        this.p2.hand.push(this.p2.deck.shift());
+    while (p2.hand.length < 5) {
+        p2.hand.push(p2.deck.shift());
     }
 
     let players = [p1.username, p2.username].sort();
-    let gameState = game.Game(p1, p2, 0, []);
+    let gameState = new game.Game(p1, p2, 0, []);
     gameState.logTurn(["Game Start!"]);
 
-    database.collection(liveGames).insertOne({
+    await database
+    .collection(liveGames)
+    .insertOne({
         players: players,
         gameState: gameState,
         timestamp: timestamp
+    }, (error, result) => {
+        if (error) {
+            console.log('failure occured when adding new game')
+            return 'failure';
+        } else {
+            console.log('Successfully added game to live games db')
+            return 'success';
+        }
     });
 };
 
 var fillGameButtons = (games, username) => {
     let buttons = [];
+    // potentially check for null
+    // if (games === null && typeof(games) === "object"){
 
+    // }
     for (let instance of games) {
         // console.log(instance)
         let opponent = instance.players.filter(player => {
@@ -77,6 +94,7 @@ var fillGameButtons = (games, username) => {
         }
         // console.log(ready)
 
+        // TODO - update this to current link
         let link = `/play/${instance.players.join(".")}`;
         // console.log('pre')
         // console.log(buttons)
@@ -108,7 +126,15 @@ var updateTurn = (currentGame, player, turnBuffer) => {
 };
 
 var renderGame = (currentGame, username) => {
-    let turnLog = currentGame.turnLog;
+    console.log('Current game: ')
+    console.log(currentGame)
+    console.log('currentGame[0].gameState: ')
+    console.log(currentGame[0].gameState)
+    console.log('Username: ')
+    console.log(username)
+    let turnLog = currentGame[0].gameState.turnLog;
+    console.log('Turn log: ')
+    console.log(turnLog)
 
     let opponent = {
         field: [],
