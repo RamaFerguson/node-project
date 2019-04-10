@@ -144,7 +144,7 @@ app.post("/logInPlayer", async function (request, response) {
                 // TODO - replace this with some text on the website when i have time
                 console.log("Password incorrect!");
                 response.render('login.hbs', {
-                    title: 'Try agauin!'
+                    title: 'Try again!'
                 });
             } else if (result === true) {
                 console.log('made it to the cookie step!');
@@ -235,7 +235,6 @@ app.get("/login", (request, response) => {
         title: "Login"
     });
 });
-
 
 
 app.get("/signup", (request, response) => {

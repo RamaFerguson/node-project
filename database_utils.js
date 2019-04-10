@@ -1,3 +1,5 @@
+const cardDB = require("./assets/card_db.json");
+
 // function that checks if user exists in player database
 // returns True if they are
 // returns False if they do not exist
@@ -7,12 +9,15 @@ function checkUserInDb(username, collection, database) {
         // console.log(collection);
         database
             .collection(collection)
-            .find({
-                username: username
-            }, {
-                username: 1
-            })
-            .toArray(function (error, result) {
+            .find(
+                {
+                    username: username
+                },
+                {
+                    username: 1
+                }
+            )
+            .toArray(function(error, result) {
                 if (error) {
                     return reject(error);
                 } else {
@@ -34,7 +39,7 @@ function returnUserDetails(username, collection, database) {
             .find({
                 username: username
             })
-            .toArray(function (error, result) {
+            .toArray(function(error, result) {
                 if (error) {
                     console.log("error in returnUserDetails");
                     reject(error);
@@ -54,7 +59,7 @@ function returnAllEntriesFromCollection(collection, database) {
         database
             .collection(collection)
             .find({})
-            .toArray(function (error, result) {
+            .toArray(function(error, result) {
                 if (error) {
                     console.log("error in returnAllEntriesFromCollection");
                     reject(error);
@@ -76,7 +81,7 @@ function returnUserDetailsByUUID(uuid, collection, database) {
             .find({
                 uuid: uuid
             })
-            .toArray(function (error, result) {
+            .toArray(function(error, result) {
                 if (error) {
                     console.log("error in returnUserDetails");
                     reject(error);
@@ -87,7 +92,7 @@ function returnUserDetailsByUUID(uuid, collection, database) {
                 }
             });
     });
-};
+}
 
 var checkGame = (players, collection, database) => {
     return new Promise((resolve, reject) => {
@@ -96,20 +101,28 @@ var checkGame = (players, collection, database) => {
             .find({
                 players: { $all: players }
             })
-            .toArray(function (error, result) {
+            .toArray(function(error, result) {
                 if (error) {
-                    console.log('error!')
+                    console.log("error!");
                     reject(error);
                 } else {
                     if (result.length === 0) {
-                        console.log('should be null')
+                        console.log("should be null");
                         resolve(null);
                     }
-                    console.log('should be result')
+                    console.log("should be result");
                     resolve(result);
                 }
             });
     });
+};
+
+var generateDeckCards = () => {
+    let deckButtons = [];
+
+    for (let key in Object.keys(cardDB)) {
+        let card = `<img src="/cards/${key}.jpg" alt=${cardDB[key].name}>`
+    }
 };
 
 module.exports = {

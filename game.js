@@ -27,7 +27,6 @@ class Game {
             this.player1.deck = turn.deck;
             this.player1.field = turn.field;
             this.player1.ready = turn.ready;
-            return true;
         } else if (
             this.player2.username === turn.username &&
             this.player2.ready === false
@@ -36,9 +35,6 @@ class Game {
             this.player2.deck = turn.deck;
             this.player2.field = turn.field;
             this.player2.ready = turn.ready;
-            return true;
-        } else {
-            return false;
         }
     }
 
