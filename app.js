@@ -201,24 +201,17 @@ app.get("/signup", (request, response) => {
     });
 });
 
-app.get("/home", async (request, response) => {
+app.get('/home', async (request, response) => {
     // checks if a user is logged in
     if (request.signedCookies) {
         console.log(request.signedCookies.id);
         try {
             let playerID = request.signedCookies.id;
-            let playerDetails = await databaseUtils.returnUserDetailsByUUID(
-                playerID,
-                playerCollection,
-                nodeProjectDB
-            );
+            let playerDetails = await databaseUtils.returnUserDetailsByUUID(playerID, playerCollection, nodeProjectDB);
             let playerUserName = playerDetails[0].username;
 
             // logic for populating live games list
-            let arrayAllPlayers = await databaseUtils.returnAllEntriesFromCollection(
-                playerCollection,
-                nodeProjectDB
-            );
+            let arrayAllPlayers = await databaseUtils.returnAllEntriesFromCollection(playerCollection, nodeProjectDB);
             let arrayAllUsernames = [];
             for (let players of arrayAllPlayers) {
                 arrayAllUsernames.push(players.username);
@@ -227,34 +220,26 @@ app.get("/home", async (request, response) => {
 
             // now that we have the list of all users, we want to compare with the list of active games that user has
             // get array of which players the user has started a game with
-            let gamesArray = await databaseUtils.checkGame(
-                [playerUserName],
-                liveGames,
-                nodeProjectDB
-            );
-            console.log(gamesArray);
+            let gamesArray = await databaseUtils.checkGame([playerUserName], liveGames, nodeProjectDB);
+            console.log(gamesArray)
 
             let newGameOpponentsNames;
             let liveOpponentsNames;
             // null means there are no live games, so can make a new game with anyone
-            if (gamesArray === null && typeof gamesArray === "object") {
-                newGameOpponentsNames = arrayAllUsernames.filter(
-                    user => user !== playerUserName
-                );
+            if (gamesArray === null && typeof (gamesArray) === "object") {
+                newGameOpponentsNames = arrayAllUsernames.filter(user => user !== playerUserName);
                 // otherwise have to split the two lists
             } else {
-                let liveGamesOpponentsArray = gameEngine.fillGameButtons(
-                    gamesArray,
-                    playerUserName
-                );
-                console.log("live games opponents array: ");
-                console.log(liveGamesOpponentsArray);
+
+                let liveGamesOpponentsArray = gameEngine.fillGameButtons(gamesArray, playerUserName);
+                console.log('live games opponents array: ')
+                console.log(liveGamesOpponentsArray)
 
                 liveOpponentsNames = liveGamesOpponentsArray.map(button => {
-                    return button.opponent;
-                });
-                console.log("live opponents names: ");
-                console.log(liveOpponentsNames);
+                    return button.opponent
+                })
+                console.log('live opponents names: ')
+                console.log(liveOpponentsNames)
 
                 // list of users to exclude from being able to make new games with
                 let excludeList = [];
@@ -266,13 +251,13 @@ app.get("/home", async (request, response) => {
                 excludeList.push(playerUserName);
                 // console.log(excludeList);
 
-                newGameOpponentsNames = arrayAllUsernames.filter(user => {
+                newGameOpponentsNames = arrayAllUsernames.filter((user) => {
                     if (!excludeList.includes(user)) {
-                        return user;
+                        return user
                     }
                 });
             }
-            console.log("newGameOpponentsNames: ");
+            console.log('newGameOpponentsNames: ')
             console.log(newGameOpponentsNames);
 
             // When either of the arrays below are empty, it causes a server error
@@ -285,18 +270,18 @@ app.get("/home", async (request, response) => {
                 liveOpponentsNames = [];
             }
 
-            response.render("main_user_page.hbs", {
-                title: "Home",
+            response.render('main_user_page.hbs', {
+                title: 'Home',
                 username: playerUserName,
                 newOpponents: newGameOpponentsNames,
                 liveOpponents: liveOpponentsNames
             });
         } catch (error) {
-            response.render("server_error.hbs", {
-                title: "Error in Server"
+            response.render('server_error.hbs', {
+                title: 'Error in Server'
             });
-        }
-    }
+        };
+    };
 });
 
 hbs.registerHelper("populateStartNewGames", (playerName, opponentNames) => {
@@ -318,71 +303,68 @@ hbs.registerHelper("populateStartNewGames", (playerName, opponentNames) => {
 });
 
 // creates new game
-app.get("/newGame/:player/:opponent", async function(request, response) {
+app.get("/newGame/playerOne/:playerOne/playerTwo/:playerTwo/current/:currentPlayer", async function (request, response) {
     try {
-        console.log("_____________New game creation start_____________");
-        console.log(request.params.player);
-        console.log(request.params.opponent);
+        console.log('_____________New game creation start_____________')
+        console.log(request.params.playerOne)
+        console.log(request.params.playerTwo)
+        console.log(request.params.currentPlayer)
 
-        let opponentDetails = await databaseUtils.returnUserDetails(
-            opponent,
-            playerCollection,
-            nodeProjectDB
-        );
-        let playerDetails = await databaseUtils.returnUserDetails(
-            player,
-            playerCollection,
-            nodeProjectDB
-        );
-        console.log(
-            "_____________opponent and player details initialised!______________"
-        );
+        let opponentName;
+        if (request.params.playerOne === request.params.currentPlayer) {
+            opponentName = request.params.playerTwo;
+        } else {
+            opponentName = request.params.playerOne;
+        }
+        let opponentDetails = await databaseUtils.returnUserDetails(opponentName, playerCollection, nodeProjectDB);
 
-        let playersArray = [player, opponent].sort();
+        let playerName = request.params.currentPlayer;
+        let playerDetails = await databaseUtils.returnUserDetails(playerName, playerCollection, nodeProjectDB);
+        console.log('_____________opponent and player details initialised!______________')
+
+        let playersArray = [
+            playerName,
+            opponentName
+        ].sort();
 
         // checkGame returns null if game does not exist, and the game object if it does exist
-        let game = await databaseUtils.checkGame(
-            playersArray,
-            liveGames,
-            nodeProjectDB
-        );
-        console.log("Game :");
-        console.log(game);
-        console.log("Type of game:");
-        console.log(typeof game);
+        let game = await databaseUtils.checkGame(playersArray, liveGames, nodeProjectDB);
+        console.log('Game :')
+        console.log(game)
+        console.log('Type of game:')
+        console.log(typeof (game));
         if (game !== null) {
             // TODO - what to do if game exists
-            console.log("Game already exists!");
+            console.log('Game already exists!')
         } else if (game === null && typeof game === "object") {
             // initialises game and saves it to liveGames collection
-            console.log("made it to game === null!");
-            gameEngine.initGame(
-                nodeProjectDB,
-                playerDetails[0],
-                opponentDetails[0]
-            );
-            console.log("_____________NEW Game initialised!_____________");
-            response.redirect(`/play/${player}/${opponent}`);
-        }
+            console.log('made it to game === null!')
+            gameEngine.initGame(nodeProjectDB, playerDetails[0], opponentDetails[0])
+            console.log('_____________NEW Game initialised!_____________')
+            response.redirect(`/play/playerOne/${playersArray[0]}/playerTwo/${playersArray[1]}/current/${playerName}`);
+        };
     } catch (error) {
-        response.render("server_error.hbs", {
-            title: "Error in Server"
+        response.render('server_error.hbs', {
+            title: 'Error in Server'
         });
-    }
+    };
 });
 
 hbs.registerHelper("populateLiveGames", (playerName, opponentNames) => {
     let links = [];
     opponentNames.forEach(opponentName => {
-        console.log("try!! nee");
-        links.push(
-            `<form action ="/play/${playerName}/${opponentName}">\n<input type = "submit" value = "Continue fighting ${opponentName}!"/>\n</form>`
-        );
+        // console.log('try!! nee')
+        if (playerName < opponentName) {
+            // links.push(`<a href="localhost:8080/play/${playerName}.${value}"> Continue fighting ${value}!</a>`);
+            links.push(`<form action ="/play/playerOne/${opponentName}/playerTwo/${playerName}/current/${playerName}">\n<input type = "submit" value = "Continue fighting ${opponentName}!"/>\n</form>`);
+        } else {
+            links.push(`<form action ="/play/playerOne/${playerName}/playerTwo/${opponentName}/current/${playerName}">\n<input type = "submit" value = "Continue fighting ${opponentName}!"/>\n</form>`);
+        }
     });
     return links.join(`\n`);
 });
 
-hbs.get("/endTurn/playerOne/:playerOne/playerTwo/:playerTwo/current/:currentPlayer", async (request, response) => {
+app.get("/endTurn/playerOne/:playerOne/playerTwo/:playerTwo/current/:currentPlayer", async (request, response) => {
     let playerArray = [request.params.playerOne, request.params.playerTwo];
     console.log('player array: ')
     console.log(playerArray)
@@ -406,15 +388,15 @@ hbs.get("/endTurn/playerOne/:playerOne/playerTwo/:playerTwo/current/:currentPlay
 });
 
 
-    for (let key of cardKeys) {
-        let cardButton = `<button type="button" onclick="addCard(\'${key}\')">
-        <img src="/cards/${key}.jpg" alt="${cardDB[key].name}">
-        </button>`;
-        cards.push(cardButton);
-    }
+//     for (let key of cardKeys) {
+//         let cardButton = `<button type="button" onclick="addCard(\'${key}\')">
+//         <img src="/cards/${key}.jpg" alt="${cardDB[key].name}">
+//         </button>`;
+//         cards.push(cardButton);
+//     }
 
-    return cards.join(`\n`);
-});
+//     return cards.join(`\n`);
+// });
 
 hbs.registerHelper("generateHeroes", heroes => {
     let heroKeys = Object.keys(heroes);
@@ -468,7 +450,11 @@ app.get("/play/playerOne/:playerOne/playerTwo/:playerTwo/current/:currentPlayer"
     console.log('player array: ')
     console.log(playerArray)
     let currentGame = await databaseUtils.checkGame(playerArray, liveGames, nodeProjectDB);
-    let gameState = await gameEngine.renderGame(currentGame, request.params.currentPlayer)
+    let gameState = await gameEngine.renderGame(currentGame, request.params.currentPlayer);
+    console.log('_________game state__________')
+    console.log(gameState)
+    console.log('________current game_________')
+    console.log(currentGame)
 
     // extracting data from gameState
     let opponentField = gameState.opponent.field;
@@ -477,9 +463,7 @@ app.get("/play/playerOne/:playerOne/playerTwo/:playerTwo/current/:currentPlayer"
     let opponentHero = gameState.opponent.hero;
     let opponentUserName = gameState.opponent.username;
 
-    // play all 5 cards at the start of the game
-    let playerField = gameState.player.hand;
-
+    let playerField = gameState.player.field;
     let playerLife = gameState.player.life;
     let playerMana = gameState.player.mana;
     let playerHero = gameState.player.hero;
@@ -505,7 +489,8 @@ app.get("/play/playerOne/:playerOne/playerTwo/:playerTwo/current/:currentPlayer"
         playerDeckSize: gameState.player.deck
 
     });
-});
+
+})
 
 // Don't need this here, I moved it to line 41
 // app.listen(port, () => {

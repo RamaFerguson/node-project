@@ -96,36 +96,36 @@ function returnUserDetailsByUUID(uuid, collection, database) {
     });
 }
 
-function updateGame(playersArray, collection, database) {
-    return new Promise((resolve, reject) => {
-        database
-            .collection(collection)
-            .update({
-                players: {
-                    $all: players
-                }
-            }, {
-                gameState.player1.hand:
+// function updateGame(playersArray, collection, database) {
+//     return new Promise((resolve, reject) => {
+//         database
+//             .collection(collection)
+//             .update({
+//                 players: {
+//                     $all: players
+//                 }
+//             }, {
+//                 gameState.player1.hand:
 
-            })
-            .toArray(function (error, result) {
-                if (error) {
-                    console.log('error!')
-                    reject(error);
-                } else {
-                    console.log('checkGame result: ')
-                    console.log(result)
-                    if (result.length === 0) {
-                        console.log('should be null')
-                        resolve(null);
-                    } else {
-                        console.log('should be result')
-                        resolve(result);
-                    };
-                };
-            });
-    });
-};
+//             })
+//             .toArray(function (error, result) {
+//                 if (error) {
+//                     console.log('error!')
+//                     reject(error);
+//                 } else {
+//                     console.log('checkGame result: ')
+//                     console.log(result)
+//                     if (result.length === 0) {
+//                         console.log('should be null')
+//                         resolve(null);
+//                     } else {
+//                         console.log('should be result')
+//                         resolve(result);
+//                     };
+//                 };
+//             });
+//     });
+// };
 
 var checkGame = (players, collection, database) => {
     return new Promise((resolve, reject) => {
