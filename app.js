@@ -226,7 +226,7 @@ app.get('/home', async (request, response) => {
             // null means there are no live games, so can make a new game with anyone
             if (gamesArray === null && typeof (gamesArray) === "object") {
                 newGameOpponentsNames = arrayAllUsernames.filter(user => user !== playerUserName);
-            // otherwise have to split the two lists
+                // otherwise have to split the two lists
             } else {
 
                 let liveGamesOpponentsArray = gameEngine.fillGameButtons(gamesArray, playerUserName);
@@ -242,7 +242,7 @@ app.get('/home', async (request, response) => {
                 // list of users to exclude from being able to make new games with
                 let excludeList = [];
                 // console.log(excludeList)
-                for (let opponent of liveOpponentsNames){
+                for (let opponent of liveOpponentsNames) {
                     excludeList.push(opponent);
                 }
                 // console.log(excludeList)
@@ -347,7 +347,7 @@ app.get("/newGame/playerOne/:playerOne/playerTwo/:playerTwo/current/:currentPlay
 hbs.registerHelper("populateLiveGames", (playerName, opponentNames) => {
     let links = [];
     opponentNames.forEach(opponentName => {
-        console.log('try!! nee')
+        // console.log('try!! nee')
         if (playerName < opponentName) {
             // links.push(`<a href="localhost:8080/play/${playerName}.${value}"> Continue fighting ${value}!</a>`);
             links.push(`<form action ="/play/playerOne/${opponentName}/playerTwo/${playerName}/current/${playerName}">\n<input type = "submit" value = "Continue fighting ${opponentName}!"/>\n</form>`);
@@ -356,6 +356,10 @@ hbs.registerHelper("populateLiveGames", (playerName, opponentNames) => {
         }
     });
     return links.join(`\n`);
+});
+
+hbs.registerHelper("handToDeck", () => {
+    console.log('aha')
 });
 
 
@@ -373,9 +377,39 @@ app.get("/play/playerOne/:playerOne/playerTwo/:playerTwo/current/:currentPlayer"
     console.log(playerArray)
     let currentGame = await databaseUtils.checkGame(playerArray, liveGames, nodeProjectDB);
     let gameState = await gameEngine.renderGame(currentGame, request.params.currentPlayer)
+
+    // extracting data from gameState
+    let opponentField = gameState.opponent.field;
+    let opponentLife = gameState.opponent.life;
+    let opponentMana = gameState.opponent.mana;
+    let opponentHero = gameState.opponent.hero;
+    let opponentUserName = gameState.opponent.username;
+
+    let playerField = gameState.player.field;
+    let playerLife = gameState.player.life;
+    let playerMana = gameState.player.mana;
+    let playerHero = gameState.player.hero;
+    let playerHand = gameState.player.hand;
+    let playerDeckSize = gameState.player.deck;
+
+
+    console.log('____GAME STATE in RENDER____')
     console.log(gameState);
     response.render("game.hbs", {
-        title: "Fight!"
+        title: "Fight!",
+        opponentField: gameState.opponent.field,
+        opponentLife: gameState.opponent.life,
+        opponentMana: gameState.opponent.mana,
+        opponentHero: gameState.opponent.hero,
+        opponentUserName: gameState.opponent.username,
+
+        playerField: gameState.player.field,
+        playerLife: gameState.player.life,
+        playerMana: gameState.player.mana,
+        playerHero: gameState.player.hero,
+        playerHand: gameState.player.hand,
+        playerDeckSize: gameState.player.deck
+
     });
 
 })
