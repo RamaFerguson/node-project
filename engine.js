@@ -1,5 +1,6 @@
 //const uuidv1 = require("uuid/v1");
 const game = require("./game");
+
 //const databaseUtils = require("./database_utils");
 
 const liveGames = "liveGames";
@@ -110,16 +111,18 @@ var fillGameButtons = (games, username) => {
     return buttons;
 };
 
-// changed player to playerUserName
-var updateTurn = (currentGame, playerUserName, turnBuffer) => {
+var updateTurn = (currentGame, player, turnBuffer) => {
+    let updatedGame = currentGame;
     let turn = {
-        username: playerUserName,
+        username: player.username,
         hand: turnBuffer.hand,
         deck: turnBuffer.deck,
         field: turnBuffer.field,
         ready: true
     };
-    currentGame.acceptTurn(turn);
+    updatedGame.acceptTurn(turn);
+
+    return updatedGame
 };
 
 var renderGame = (currentGame, username) => {
@@ -181,6 +184,8 @@ var renderGame = (currentGame, username) => {
 
     return { opponent: opponent, player: player, log: turnLog };
 };
+
+
 
 module.exports = {
     initGame,

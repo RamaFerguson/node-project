@@ -1,7 +1,7 @@
 module.exports = heroes = {
     lightlord: {
         name: "Lightlord Francis",
-        desc: "Kill your opponent's strongest monster every turn.",
+        desc: "Kill the strongest enemy monster every turn.",
         power: (pID, opponent) => {
             if (opponent.field.length > 0) {
                 let deadMinion = opponent.field.reduce((prev, next) => {
@@ -13,7 +13,8 @@ module.exports = heroes = {
             } else {
                 return `${pID}: Nothing to kill!`;
             }
-        }
+        },
+        key: "lightlord"
     },
     brodia: {
         name: "Brodia, The Vanguard",
@@ -23,7 +24,8 @@ module.exports = heroes = {
                 this.damage = 3;
             }
             return `${pID}: damage reduced!`;
-        }
+        },
+        key: "brodia"
     },
     hundred_bats: {
         name: "One Hundred Bats",
@@ -31,7 +33,8 @@ module.exports = heroes = {
         power: (pID, opponent) => {
             opponent.life -= 2;
             return `${pID}: opponent bleeds for 2 damage!`;
-        }
+        },
+        key: "hundred_bats"
     },
     guuch: {
         name: "The Guuch",
@@ -41,7 +44,8 @@ module.exports = heroes = {
                 this.mana++;
             }
             return `${pID}: your mana overcharges!`;
-        }
+        },
+        key: "guuch"
     },
     brainum: {
         name: "Brainum",
@@ -51,6 +55,7 @@ module.exports = heroes = {
                 this.hand.push(this.deck.shift());
             }
             return `${pID}: you draw another card!`;
-        }
+        },
+        key: "branium"
     }
 };
