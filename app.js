@@ -167,11 +167,6 @@ app.post("/logInPlayer", async function(request, response) {
     }
 });
 
-// populates live games list
-hbs.registerHelper("getCurrentYear", () => {
-    return new Date().getFullYear();
-});
-
 var pages = {
     "/index": "index",
     "/about": "about me",
@@ -336,14 +331,13 @@ app.get("/newGame/playerOne/:playerOne/playerTwo/:playerTwo/current/:currentPlay
         console.log('Type of game:')
         console.log(typeof (game));
         if (game !== null) {
-            // TODO - what to do if game exists
             console.log('Game already exists!')
         } else if (game === null && typeof game === "object") {
             // initialises game and saves it to liveGames collection
             console.log('made it to game === null!')
             gameEngine.initGame(nodeProjectDB, playerDetails[0], opponentDetails[0])
             console.log('_____________NEW Game initialised!_____________')
-            response.redirect(`/play/playerOne/${playersArray[0]}/playerTwo/${playersArray[1]}/current/${playerName}`);
+            response.redirect(`/play/player/${playersArray[0]}/opponent/${playersArray[1]}`);
         };
     } catch (error) {
         response.render('server_error.hbs', {
@@ -357,25 +351,18 @@ hbs.registerHelper("populateLiveGames", (playerName, opponentNames) => {
     opponentNames.forEach(opponentName => {
         console.log("try!! nee");
         links.push(
-            `<form action ="/play/${playerName}/${opponentName}">\n<input type = "submit" value = "Continue fighting ${opponentName}!"/>\n</form>`
+            `<form action ="/play/player/${playerName}/opponent/${opponentName}">\n<input type = "submit" value = "Continue fighting ${opponentName}!"/>\n</form>`
         );
     });
     return links.join(`\n`);
 });
 
 hbs.registerHelper("generateDeckCards", cardKeys => {
-    let cards = [];
-app.get("/endTurn/playerOne/:playerOne/playerTwo/:playerTwo/current/:currentPlayer", async (request, response) => {
-    let playerArray = [request.params.playerOne, request.params.playerTwo];
-    console.log('player array: ')
-    console.log(playerArray)
-    let currentGame = await databaseUtils.checkGame(playerArray, liveGames, nodeProjectDB);
-    // let gameState = await gameEngine.renderGame(currentGame, request.params.currentPlayer);
-    let currentPlayer;
-    if (currentGame[0].gameState.player1.username === request.params.currentPlayer) {
-        currentPlayer = "player1"
-    } else {
-        currentPlayer = "player2";
+    for (let key of cardKeys) {
+        let cardButton = `<button type="button" onclick="addCard(\'${key}\')">
+        <img src="/cards/${key}.jpg" alt="${cardDB[key].name}">
+        </button>`;
+        cards.push(cardButton);
     }
     currentGame[0].gameState.field = currentGame[0].gameState.hand;
     currentGame[0].gameState.hand = [];
@@ -445,7 +432,7 @@ app.get("/deckbuild", async (request, response) => {
     });
 });
 
-app.get("/play/:player/:opponent", async (request, response) => {
+app.get("/play/player/:player/opponent/:opponent", async (request, response) => {
     console.log(request.params);
     let playerArray = [request.params.player, request.params.opponent].sort();
     console.log("player array: ");
@@ -453,21 +440,6 @@ app.get("/play/:player/:opponent", async (request, response) => {
     console.log(playerArray)
     let currentGame = await databaseUtils.checkGame(playerArray, liveGames, nodeProjectDB);
     let gameState = await gameEngine.renderGame(currentGame, request.params.player)
-
-    // extracting data from gameState
-    let opponentField = gameState.opponent.field;
-    let opponentLife = gameState.opponent.life;
-    let opponentMana = gameState.opponent.mana;
-    let opponentHero = gameState.opponent.hero;
-    let opponentUserName = gameState.opponent.username;
-
-    let playerField = gameState.player.field;
-    let playerLife = gameState.player.life;
-    let playerMana = gameState.player.mana;
-    let playerHero = gameState.player.hero;
-    let playerHand = gameState.player.hand;
-    let playerDeckSize = gameState.player.deck;
-
 
     console.log('____GAME STATE in RENDER____')
     console.log(gameState);
@@ -488,44 +460,7 @@ app.get("/play/:player/:opponent", async (request, response) => {
 
     });
 
-})
-
-// Don't need this here, I moved it to line 41
-// app.listen(port, () => {
-//     console.log('Vanguard Assault is online')
-
-// // get array of which players the user has started a game with
-// let gamesArray = await databaseUtils.checkGame(playerDetails[0].username, liveGames, nodeProjectDB);
-// if (game !== null) {
-//     // TODO - what to do if game exists
-//     console.log('Game already exists!')
-// }
-
-// // replace with however we extract opponent's username from the list
-// let opponentName = request.body.opponentUserName;
-// let opponentDetails = await databaseUtils.returnUserDetails(opponentName, playerCollection, nodeProjectDB);
-
-// });
-
-// hbs.registerHelper("getCurrentYear", () => {
-//     return new Date().getFullYear();
-// });
-
-// var pages = {
-//     "/index": "index",
-//     "/about": "about me",
-//     "/convert": "convert money here"
-// };
-
-// hbs.registerHelper("makeLinks", currentEndpoint => {
-//     let links = [];
-//     Object.entries(pages).forEach(page => {
-//         if (page[0] !== currentEndpoint) {
-//             links.push(`<li><a href=${page[0]}>${page[1]}</a></li>`);
-//         }
-//     });
-//     return links.join(`\n`);
-// });
+});
 
 app.get("/deckbuild", (request, response) => {
     response.render("deckbuild.hbs", {
@@ -538,7 +473,19 @@ app.get("/play/player/:player/opponent/:opponent", (request, response) => {
     // let players = playerString.split("-")
     console.log(request.params);
     response.render("game.hbs", {
-        title: "Fight!"
+        title: "Fight!",
+        opponentField: gameState.opponent.field,
+        opponentLife: gameState.opponent.life,
+        opponentMana: gameState.opponent.mana,
+        opponentHero: gameState.opponent.hero,
+        opponentUserName: gameState.opponent.username,
+
+        playerField: gameState.player.field,
+        playerLife: gameState.player.life,
+        playerMana: gameState.player.mana,
+        playerHero: gameState.player.hero,
+        playerHand: gameState.player.hand,
+        playerDeckSize: gameState.player.deck
     });
 });
 
