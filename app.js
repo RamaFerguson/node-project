@@ -27,9 +27,12 @@ const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
 // collection that stores player data
-const PLAYER_COLLECTION = "players";
+const playerCollection = "players";
 const liveGames = "liveGames";
 const deadGames = "deadGames";
+
+// contains functions that setup, run and finish games
+const gameEngine = require('./engine');
 
 // enables parsing of body json
 const bodyParser = require("body-parser");
@@ -73,7 +76,7 @@ app.post("/newPlayerAccount", async function (request, response) {
     // verifying username is new
     let userExists = await databaseUtils.checkUserInDb(
         username,
-        PLAYER_COLLECTION,
+        playerCollection,
         nodeProjectDB
     );
     if (userExists === true) {
@@ -82,7 +85,7 @@ app.post("/newPlayerAccount", async function (request, response) {
         });
     } else {
         // adds new user to player collection
-        nodeProjectDB.collection(PLAYER_COLLECTION).insertOne({
+        nodeProjectDB.collection(playerCollection).insertOne({
                 uuid: uuidv1(),
                 username: username,
                 password: hashedPassword,
@@ -114,7 +117,7 @@ app.post("/logInPlayer", async function (request, response) {
     // verifying username exists
     let userExists = await databaseUtils.checkUserInDb(
         username,
-        PLAYER_COLLECTION,
+        playerCollection,
         nodeProjectDB
     );
     if (userExists === false) {
@@ -123,7 +126,7 @@ app.post("/logInPlayer", async function (request, response) {
         });
     } else {
         // fetch hashed password on db
-        let userDetails = await databaseUtils.returnUserDetails(username, PLAYER_COLLECTION, nodeProjectDB).catch((error) => {
+        let userDetails = await databaseUtils.returnUserDetails(username, playerCollection, nodeProjectDB).catch((error) => {
             console.log('the catch is happening');
             response.render('server_error.hbs', {
                 title: 'Uh oh!'
@@ -153,6 +156,45 @@ app.post("/logInPlayer", async function (request, response) {
             };
         });
     };
+});
+
+// creates new game
+app.post("/newGame", async function (request, response) {
+    // replace with however we extract opponent's username from the list
+    let opponentName = request.body.opponentUserName;
+
+    let playerID = request.signedCookies.id;
+    let playerDetails = await databaseUtils.returnUserDetailsByUUID(playerID, playerCollection, nodeProjectDB);
+
+    // checkGame returns null if game does not exist, and the game object if it does exist
+    let game = await databaseUtils.checkGame(player, liveGames, nodeProjectDB);
+    if (game !== null) {
+        // TODO - what to do if game exists
+    } else {
+        // initialises game and saves it to liveGames collection
+        gameEngine.initGame(nodeProjectDB, )
+        nodeProjectDB.collection(playerCollection).insertOne({
+                uuid: uuidv1(),
+                username: username,
+                password: hashedPassword,
+                wins: 0,
+                losses: 0,
+                draws: 0,
+                deck: {}
+            },
+            (error, result) => {
+                if (error) {
+                    response.render("server_error.hbs", {
+                        title: "Uh oh!"
+                    });
+                } else {
+                    response.render("new_user_success.hbs", {
+                        title: "Success!"
+                    });
+                }
+            }
+        );
+    }
 });
 
 
@@ -185,7 +227,7 @@ app.get('/home', async (request, response) => {
     if (request.signedCookies) {
         // console.log(request.signedCookies.id);
         try {
-            let userDetails = await databaseUtils.returnUserDetailsByUUID(request.signedCookies.id, PLAYER_COLLECTION, nodeProjectDB);
+            let userDetails = await databaseUtils.returnUserDetailsByUUID(request.signedCookies.id, playerCollection, nodeProjectDB);
             let username = await userDetails[0].username
             response.render('main_user_page.hbs', {
                 title: 'Home',
