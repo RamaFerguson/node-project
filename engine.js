@@ -126,14 +126,15 @@ var updateTurn = (currentGame, player, turnBuffer) => {
 };
 
 var renderGame = (currentGame, username) => {
-    console.log('Current game: ')
+    console.log('_____renderGame logs______')
+    console.log('______Current game: ____')
     console.log(currentGame)
     console.log('currentGame[0].gameState: ')
     console.log(currentGame[0].gameState)
     console.log('Username: ')
     console.log(username)
-    let turnLog = currentGame[0].gameState.turnLog;
-    console.log('Turn log: ')
+    let turnLog = currentGame[0].gameState.turnLogs;
+    console.log('Turn logs: ')
     console.log(turnLog)
 
     let opponent = {
@@ -153,32 +154,32 @@ var renderGame = (currentGame, username) => {
         deck: ""
     };
 
-    if (currentGame.player1.username === username) {
-        opponent.field = currentGame.player2.field;
-        opponent.life = currentGame.player2.life;
-        opponent.mana = currentGame.player2.mana;
-        opponent.hero = currentGame.player2.hero;
-        opponent.username = currentGame.player2.username;
+    if (currentGame[0].gameState.player1.username === username) {
+        opponent.field = currentGame[0].gameState.player2.field;
+        opponent.life = currentGame[0].gameState.player2.life;
+        opponent.mana = currentGame[0].gameState.player2.mana;
+        opponent.hero = currentGame[0].gameState.player2.hero;
+        opponent.username = currentGame[0].gameState.player2.username;
 
-        player.field = currentGame.player1.field;
-        player.life = currentGame.player1.life;
-        player.mana = currentGame.player1.mana;
-        player.hero = currentGame.player1.hero;
-        player.hand = currentGame.player1.hand;
-        player.deck = currentGame.player1.deck.length;
+        player.field = currentGame[0].gameState.player1.field;
+        player.life = currentGame[0].gameState.player1.life;
+        player.mana = currentGame[0].gameState.player1.mana;
+        player.hero = currentGame[0].gameState.player1.hero;
+        player.hand = currentGame[0].gameState.player1.hand;
+        player.deck = currentGame[0].gameState.player1.deck.length;
     } else {
-        opponent.field = currentGame.player1.field;
-        opponent.life = currentGame.player1.life;
-        opponent.mana = currentGame.player1.mana;
-        opponent.hero = currentGame.player1.hero;
-        opponent.username = currentGame.player1.username;
+        opponent.field = currentGame[0].gameState.player1.field;
+        opponent.life = currentGame[0].gameState.player1.life;
+        opponent.mana = currentGame[0].gameState.player1.mana;
+        opponent.hero = currentGame[0].gameState.player1.hero;
+        opponent.username = currentGame[0].gameState.player1.username;
 
-        player.field = currentGame.player2.field;
-        player.life = currentGame.player2.life;
-        player.mana = currentGame.player2.mana;
-        player.hero = currentGame.player2.hero;
-        player.hand = currentGame.player2.hand;
-        player.deck = currentGame.player2.deck.length;
+        player.field = currentGame[0].gameState.player2.field;
+        player.life = currentGame[0].gameState.player2.life;
+        player.mana = currentGame[0].gameState.player2.mana;
+        player.hero = currentGame[0].gameState.player2.hero;
+        player.hand = currentGame[0].gameState.player2.hand;
+        player.deck = currentGame[0].gameState.player2.deck.length;
     }
 
     return { opponent: opponent, player: player, log: turnLog };
