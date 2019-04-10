@@ -45,7 +45,7 @@ app.use(
     })
 );
 
-const axios = require('axios')
+const axios = require("axios");
 
 // mongo connection
 let mongodb = require("mongodb");
@@ -197,17 +197,24 @@ app.get("/signup", (request, response) => {
     });
 });
 
-app.get('/home', async (request, response) => {
+app.get("/home", async (request, response) => {
     // checks if a user is logged in
     if (request.signedCookies) {
         console.log(request.signedCookies.id);
         try {
             let playerID = request.signedCookies.id;
-            let playerDetails = await databaseUtils.returnUserDetailsByUUID(playerID, playerCollection, nodeProjectDB);
+            let playerDetails = await databaseUtils.returnUserDetailsByUUID(
+                playerID,
+                playerCollection,
+                nodeProjectDB
+            );
             let playerUserName = playerDetails[0].username;
 
             // logic for populating live games list
-            let arrayAllPlayers = await databaseUtils.returnAllEntriesFromCollection(playerCollection, nodeProjectDB);
+            let arrayAllPlayers = await databaseUtils.returnAllEntriesFromCollection(
+                playerCollection,
+                nodeProjectDB
+            );
             let arrayAllUsernames = [];
             for (let players of arrayAllPlayers) {
                 arrayAllUsernames.push(players.username);
@@ -216,8 +223,12 @@ app.get('/home', async (request, response) => {
 
             // now that we have the list of all users, we want to compare with the list of active games that user has
             // get array of which players the user has started a game with
-            let gamesArray = await databaseUtils.checkGame([playerUserName], liveGames, nodeProjectDB);
-            console.log(gamesArray)
+            let gamesArray = await databaseUtils.checkGame(
+                [playerUserName],
+                liveGames,
+                nodeProjectDB
+            );
+            console.log(gamesArray);
 
             let newGameOpponentsNames;
             let liveOpponentsNames;
@@ -228,16 +239,18 @@ app.get('/home', async (request, response) => {
                 );
                 // otherwise have to split the two lists
             } else {
-
-                let liveGamesOpponentsArray = gameEngine.fillGameButtons(gamesArray, playerUserName);
-                console.log('live games opponents array: ')
-                console.log(liveGamesOpponentsArray)
+                let liveGamesOpponentsArray = gameEngine.fillGameButtons(
+                    gamesArray,
+                    playerUserName
+                );
+                console.log("live games opponents array: ");
+                console.log(liveGamesOpponentsArray);
 
                 liveOpponentsNames = liveGamesOpponentsArray.map(button => {
-                    return button.opponent
-                })
-                console.log('live opponents names: ')
-                console.log(liveOpponentsNames)
+                    return button.opponent;
+                });
+                console.log("live opponents names: ");
+                console.log(liveOpponentsNames);
 
                 // list of users to exclude from being able to make new games with
                 let excludeList = [];
@@ -249,13 +262,13 @@ app.get('/home', async (request, response) => {
                 excludeList.push(playerUserName);
                 // console.log(excludeList);
 
-                newGameOpponentsNames = arrayAllUsernames.filter((user) => {
+                newGameOpponentsNames = arrayAllUsernames.filter(user => {
                     if (!excludeList.includes(user)) {
-                        return user
+                        return user;
                     }
                 });
             }
-            console.log('newGameOpponentsNames: ')
+            console.log("newGameOpponentsNames: ");
             console.log(newGameOpponentsNames);
 
             // When either of the arrays below are empty, it causes a server error
@@ -268,18 +281,18 @@ app.get('/home', async (request, response) => {
                 liveOpponentsNames = [];
             }
 
-            response.render('main_user_page.hbs', {
-                title: 'Home',
+            response.render("main_user_page.hbs", {
+                title: "Home",
                 username: playerUserName,
                 newOpponents: newGameOpponentsNames,
                 liveOpponents: liveOpponentsNames
             });
         } catch (error) {
-            response.render('server_error.hbs', {
-                title: 'Error in Server'
+            response.render("server_error.hbs", {
+                title: "Error in Server"
             });
-        };
-    };
+        }
+    }
 });
 
 hbs.registerHelper("populateStartNewGames", (playerName, opponentNames) => {
@@ -301,51 +314,73 @@ hbs.registerHelper("populateStartNewGames", (playerName, opponentNames) => {
 });
 
 // creates new game
-app.get("/newGame/playerOne/:playerOne/playerTwo/:playerTwo/current/:currentPlayer", async function (request, response) {
-    try {
-        console.log('_____________New game creation start_____________')
-        console.log(request.params.playerOne)
-        console.log(request.params.playerTwo)
-        console.log(request.params.currentPlayer)
+app.get(
+    "/newGame/playerOne/:playerOne/playerTwo/:playerTwo/current/:currentPlayer",
+    async function(request, response) {
+        try {
+            console.log("_____________New game creation start_____________");
+            console.log(request.params.playerOne);
+            console.log(request.params.playerTwo);
+            console.log(request.params.currentPlayer);
 
-        let opponentName;
-        if (request.params.playerOne === request.params.currentPlayer) {
-            opponentName = request.params.playerTwo;
-        } else {
-            opponentName = request.params.playerOne;
+            let opponentName;
+            if (request.params.playerOne === request.params.currentPlayer) {
+                opponentName = request.params.playerTwo;
+            } else {
+                opponentName = request.params.playerOne;
+            }
+            let opponentDetails = await databaseUtils.returnUserDetails(
+                opponentName,
+                playerCollection,
+                nodeProjectDB
+            );
+
+            let playerName = request.params.currentPlayer;
+            let playerDetails = await databaseUtils.returnUserDetails(
+                playerName,
+                playerCollection,
+                nodeProjectDB
+            );
+            console.log(
+                "_____________opponent and player details initialised!______________"
+            );
+
+            let playersArray = [playerName, opponentName].sort();
+
+            // checkGame returns null if game does not exist, and the game object if it does exist
+            let game = await databaseUtils.checkGame(
+                playersArray,
+                liveGames,
+                nodeProjectDB
+            );
+            console.log("Game :");
+            console.log(game);
+            console.log("Type of game:");
+            console.log(typeof game);
+            if (game !== null) {
+                console.log("Game already exists!");
+            } else if (game === null && typeof game === "object") {
+                // initialises game and saves it to liveGames collection
+                console.log("made it to game === null!");
+                gameEngine.initGame(
+                    nodeProjectDB,
+                    playerDetails[0],
+                    opponentDetails[0]
+                );
+                console.log("_____________NEW Game initialised!_____________");
+                response.redirect(
+                    `/play/player/${playersArray[0]}/opponent/${
+                        playersArray[1]
+                    }`
+                );
+            }
+        } catch (error) {
+            response.render("server_error.hbs", {
+                title: "Error in Server"
+            });
         }
-        let opponentDetails = await databaseUtils.returnUserDetails(opponentName, playerCollection, nodeProjectDB);
-
-        let playerName = request.params.currentPlayer;
-        let playerDetails = await databaseUtils.returnUserDetails(playerName, playerCollection, nodeProjectDB);
-        console.log('_____________opponent and player details initialised!______________')
-
-        let playersArray = [
-            playerName,
-            opponentName
-        ].sort();
-
-        // checkGame returns null if game does not exist, and the game object if it does exist
-        let game = await databaseUtils.checkGame(playersArray, liveGames, nodeProjectDB);
-        console.log('Game :')
-        console.log(game)
-        console.log('Type of game:')
-        console.log(typeof (game));
-        if (game !== null) {
-            console.log('Game already exists!')
-        } else if (game === null && typeof game === "object") {
-            // initialises game and saves it to liveGames collection
-            console.log('made it to game === null!')
-            gameEngine.initGame(nodeProjectDB, playerDetails[0], opponentDetails[0])
-            console.log('_____________NEW Game initialised!_____________')
-            response.redirect(`/play/player/${playersArray[0]}/opponent/${playersArray[1]}`);
-        };
-    } catch (error) {
-        response.render('server_error.hbs', {
-            title: 'Error in Server'
-        });
-    };
-});
+    }
+);
 
 hbs.registerHelper("populateLiveGames", (playerName, opponentNames) => {
     let links = [];
@@ -383,22 +418,20 @@ hbs.registerHelper("generateHeroes", heroes => {
         </button>`;
         heroButtons.push(heroButton);
     }
-
     return heroButtons;
 });
 
 hbs.registerHelper("oldHeroName", oldHero => {
-    return heroes[oldHero].name
+    return heroes[oldHero].name;
 });
 
 hbs.registerHelper("oldHeroDesc", oldHero => {
-    return heroes[oldHero].desc
+    return heroes[oldHero].desc;
 });
 
 hbs.registerHelper("oldDeck", oldCards => {
-    return oldCards.join(`\n`)
+    return oldCards.join(`\n`);
 });
-
 
 app.get("/deckbuild", async (request, response) => {
     let playerID = request.signedCookies.id;
@@ -420,42 +453,66 @@ app.get("/deckbuild", async (request, response) => {
     });
 });
 
-app.get("/play/player/:player/opponent/:opponent", async (request, response) => {
-    console.log(request.params);
-    let playerArray = [request.params.player, request.params.opponent].sort();
-    console.log("player array: ");
-
-    console.log(playerArray)
-    let currentGame = await databaseUtils.checkGame(playerArray, liveGames, nodeProjectDB);
-    let gameState = await gameEngine.renderGame(currentGame, request.params.player)
-
-    console.log('____GAME STATE in RENDER____')
-    console.log(gameState);
-    response.render("game.hbs", {
-        title: "Fight!",
-        opponentField: gameState.opponent.field,
-        opponentLife: gameState.opponent.life,
-        opponentMana: gameState.opponent.mana,
-        opponentHero: gameState.opponent.hero,
-        opponentUserName: gameState.opponent.username,
-
-        playerField: gameState.player.field,
-        playerLife: gameState.player.life,
-        playerMana: gameState.player.mana,
-        playerHero: gameState.player.hero,
-        playerHand: gameState.player.hand,
-        playerDeckSize: gameState.player.deck
-
-    });
-
-});
-
-app.get("/deckbuild", (request, response) => {
-    response.render("deckbuild.hbs", {
-        title: "deckbuild",
-        heroes: heroes
+app.post("/deckbuild/confirm", async (request, response) => {
+    let playerID = request.signedCookies.id;
+    let playerDetails = await databaseUtils.returnUserDetailsByUUID(
+        playerID,
+        playerCollection,
+        nodeProjectDB
+    );
+    //console.log(request.body)
+    return new Promise((resolve, reject) => {
+        nodeProjectDB.playerCollection.update(
+            {
+                uuid: playerID
+            },
+            {
+                deck: request.body.deck
+            }
+        );
     });
 });
+
+app.get(
+    "/play/player/:player/opponent/:opponent",
+    async (request, response) => {
+        console.log(request.params);
+        let playerArray = [
+            request.params.player,
+            request.params.opponent
+        ].sort();
+        console.log("player array: ");
+
+        console.log(playerArray);
+        let currentGame = await databaseUtils.checkGame(
+            playerArray,
+            liveGames,
+            nodeProjectDB
+        );
+        let gameState = await gameEngine.renderGame(
+            currentGame,
+            request.params.player
+        );
+
+        console.log("____GAME STATE in RENDER____");
+        console.log(gameState);
+        response.render("game.hbs", {
+            title: "Fight!",
+            opponentField: gameState.opponent.field,
+            opponentLife: gameState.opponent.life,
+            opponentMana: gameState.opponent.mana,
+            opponentHero: gameState.opponent.hero,
+            opponentUserName: gameState.opponent.username,
+
+            playerField: gameState.player.field,
+            playerLife: gameState.player.life,
+            playerMana: gameState.player.mana,
+            playerHero: gameState.player.hero,
+            playerHand: gameState.player.hand,
+            playerDeckSize: gameState.player.deck
+        });
+    }
+);
 
 app.get("/play/player/:player/opponent/:opponent", (request, response) => {
     // let players = playerString.split("-")
