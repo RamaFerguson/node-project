@@ -30,5 +30,9 @@ function changeHero(key, name, desc) {
 }
 
 function confirmDeck() {
-    console.log(deck);
+    axios({
+        method: 'post',
+        url: '/deckbuild/confirm',
+        deck: deck
+      });
 }
