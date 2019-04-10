@@ -47,6 +47,26 @@ function returnUserDetails(username, collection, database) {
     });
 }
 
+function returnAllEntriesFromCollection(collection, database) {
+    return new Promise((resolve, reject) => {
+        // console.log(username);
+        // console.log(collection);
+        database
+            .collection(collection)
+            .find({})
+            .toArray(function (error, result) {
+                if (error) {
+                    console.log("error in returnAllEntriesFromCollection");
+                    reject(error);
+                } else {
+                    console.log("returnAllEntriesFromCollection worked");
+                    resolve(result);
+                    //JSON.stringify(result.ops, undefined, 2)
+                }
+            });
+    });
+}
+
 function returnUserDetailsByUUID(uuid, collection, database) {
     return new Promise((resolve, reject) => {
         // console.log(username);
@@ -93,5 +113,6 @@ module.exports = {
     checkUserInDb,
     returnUserDetails,
     returnUserDetailsByUUID,
+    returnAllEntriesFromCollection,
     checkGame
 };

@@ -158,43 +158,87 @@ app.post("/logInPlayer", async function (request, response) {
     };
 });
 
-// creates new game
-app.post("/newGame", async function (request, response) {
-    // replace with however we extract opponent's username from the list
-    let opponentName = request.body.opponentUserName;
+// populates live games list
+hbs.registerHelper("getCurrentYear", () => {
+    return new Date().getFullYear();
+});
 
+var pages = {
+    "/index": "index",
+    "/about": "about me",
+    "/convert": "convert money here"
+};
+
+hbs.registerHelper("populateStartNewGames", () => {
     let playerID = request.signedCookies.id;
     let playerDetails = await databaseUtils.returnUserDetailsByUUID(playerID, playerCollection, nodeProjectDB);
+    let arrayAllPlayers = await databaseUtils.returnAllEntriesFromCollection(playerCollection, nodeProjectDB);
+    let arrayAllUsernames = [];
+    for (let players of arrayAllPlayers){
+        arrayAllUsernames.push(players.username);
+    }
+    console.log(arrayAllUsernames);
 
-    // checkGame returns null if game does not exist, and the game object if it does exist
-    let game = await databaseUtils.checkGame(player, liveGames, nodeProjectDB);
+    // get array of which players the user has started a game with
+    let gamesArray = await databaseUtils.checkGame(playerDetails[0].username, liveGames, nodeProjectDB);
     if (game !== null) {
         // TODO - what to do if game exists
-    } else {
-        // initialises game and saves it to liveGames collection
-        gameEngine.initGame(nodeProjectDB, )
-        nodeProjectDB.collection(playerCollection).insertOne({
-                uuid: uuidv1(),
-                username: username,
-                password: hashedPassword,
-                wins: 0,
-                losses: 0,
-                draws: 0,
-                deck: {}
-            },
-            (error, result) => {
-                if (error) {
-                    response.render("server_error.hbs", {
-                        title: "Uh oh!"
-                    });
-                } else {
-                    response.render("new_user_success.hbs", {
-                        title: "Success!"
-                    });
-                }
-            }
-        );
+        console.log('Game already exists!')
     }
+
+    // replace with however we extract opponent's username from the list
+    let opponentName = request.body.opponentUserName;
+    let opponentDetails = await databaseUtils.returnUserDetails(opponentName, playerCollection, nodeProjectDB);
+
+
+});
+
+// creates new game
+app.post("/newGame", async function (request, response) {
+    try {
+        // replace with however we extract opponent's username from the list
+        let opponentName = request.body.opponentUserName;
+        let opponentDetails = await databaseUtils.returnUserDetails(opponentName, playerCollection, nodeProjectDB);
+
+        let playerID = request.signedCookies.id;
+        let playerDetails = await databaseUtils.returnUserDetailsByUUID(playerID, playerCollection, nodeProjectDB);
+
+        // checkGame returns null if game does not exist, and the game object if it does exist
+        let game = await databaseUtils.checkGame(player, liveGames, nodeProjectDB);
+        if (game !== null) {
+            // TODO - what to do if game exists
+            console.log('Game already exists!')
+        } else {
+            // initialises game and saves it to liveGames collection
+            gameEngine.initGame(nodeProjectDB, playerDetails[0], opponentDetails[0])
+
+            // nodeProjectDB.collection(playerCollection).insertOne({
+            //         uuid: uuidv1(),
+            //         username: username,
+            //         password: hashedPassword,
+            //         wins: 0,
+            //         losses: 0,
+            //         draws: 0,
+            //         deck: {}
+            //     },
+            //     (error, result) => {
+            //         if (error) {
+            //             response.render("server_error.hbs", {
+            //                 title: "Uh oh!"
+            //             });
+            //         } else {
+            //             response.render("new_user_success.hbs", {
+            //                 title: "Success!"
+            //             });
+            //         }
+            //     }
+            // );
+        };
+    } catch (error) {
+        response.render('server_error.hbs', {
+            title: 'Error in Server'
+        });
+    };
 });
 
 
@@ -241,25 +285,25 @@ app.get('/home', async (request, response) => {
     };
 });
 
-hbs.registerHelper("getCurrentYear", () => {
-    return new Date().getFullYear();
-});
+// hbs.registerHelper("getCurrentYear", () => {
+//     return new Date().getFullYear();
+// });
 
-var pages = {
-    "/index": "index",
-    "/about": "about me",
-    "/convert": "convert money here"
-};
+// var pages = {
+//     "/index": "index",
+//     "/about": "about me",
+//     "/convert": "convert money here"
+// };
 
-hbs.registerHelper("makeLinks", currentEndpoint => {
-    let links = [];
-    Object.entries(pages).forEach(page => {
-        if (page[0] !== currentEndpoint) {
-            links.push(`<li><a href=${page[0]}>${page[1]}</a></li>`);
-        }
-    });
-    return links.join(`\n`);
-});
+// hbs.registerHelper("makeLinks", currentEndpoint => {
+//     let links = [];
+//     Object.entries(pages).forEach(page => {
+//         if (page[0] !== currentEndpoint) {
+//             links.push(`<li><a href=${page[0]}>${page[1]}</a></li>`);
+//         }
+//     });
+//     return links.join(`\n`);
+// });
 
 app.get("/deckbuild", (request, response) => {
     response.render("deckbuild.hbs", {
