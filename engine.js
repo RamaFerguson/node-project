@@ -6,11 +6,13 @@ const game = require("./game");
 //const deadGames = "./dead_games/";
 
 var initGame = (database, player1, player2) => {
+    let timestamp = new Date();
+
     let p1 = {
         username: player1.username,
         life: 20,
         hero: player1.deck.hero,
-        deck: game.populateDeck(player1.deck.cards),
+        deck: player1.deck.cards,
         hand: [],
         field: [],
         graveyard: [],
@@ -23,7 +25,7 @@ var initGame = (database, player1, player2) => {
         username: player2.username,
         life: 20,
         hero: player2.deck.hero,
-        deck: game.populateDeck(player2.deck.cards),
+        deck: player2.deck.cards,
         hand: [],
         field: [],
         graveyard: [],
@@ -48,7 +50,8 @@ var initGame = (database, player1, player2) => {
 
     database.collection(liveGames).insertOne({
         players: players,
-        gameState: gameState
+        gameState: gameState,
+        timestamp: timestamp
     });
 };
 
@@ -99,8 +102,55 @@ var updateTurn = (currentGame, player, turnBuffer) => {
 };
 
 var renderGame = (currentGame, username) => {
-    let opponent
-}
+    let turnLog = currentGame.turnLog;
+
+    let opponent = {
+        field: [],
+        life: "",
+        mana: "",
+        hero: "",
+        username: ""
+    };
+
+    let player = {
+        field: [],
+        life: "",
+        mana: "",
+        hero: "",
+        hand: "",
+        deck: ""
+    };
+
+    if (currentGame.player1.username === username) {
+        opponent.field = currentGame.player2.field;
+        opponent.life = currentGame.player2.life;
+        opponent.mana = currentGame.player2.mana;
+        opponent.hero = currentGame.player2.hero;
+        opponent.username = currentGame.player2.username;
+
+        player.field = currentGame.player1.field;
+        player.life = currentGame.player1.life;
+        player.mana = currentGame.player1.mana;
+        player.hero = currentGame.player1.hero;
+        player.hand = currentGame.player1.hand;
+        player.deck = currentGame.player1.deck.length;
+    } else {
+        opponent.field = currentGame.player1.field;
+        opponent.life = currentGame.player1.life;
+        opponent.mana = currentGame.player1.mana;
+        opponent.hero = currentGame.player1.hero;
+        opponent.username = currentGame.player1.username;
+
+        player.field = currentGame.player2.field;
+        player.life = currentGame.player2.life;
+        player.mana = currentGame.player2.mana;
+        player.hero = currentGame.player2.hero;
+        player.hand = currentGame.player2.hand;
+        player.deck = currentGame.player2.deck.length;
+    }
+
+    return { opponent: opponent, player: player, log: turnLog };
+};
 
 module.exports = {
     initGame,
