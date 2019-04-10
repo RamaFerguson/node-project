@@ -45,6 +45,8 @@ app.use(
     })
 );
 
+const axios = require('axios')
+
 // mongo connection
 let mongodb = require("mongodb");
 let MongoClient = require("mongodb").MongoClient;
@@ -171,12 +173,6 @@ app.post("/logInPlayer", async function(request, response) {
 hbs.registerHelper("getCurrentYear", () => {
     return new Date().getFullYear();
 });
-
-var pages = {
-    "/index": "index",
-    "/about": "about me",
-    "/convert": "convert money here"
-};
 
 hbs.registerPartials(__dirname + "/views");
 hbs.registerPartials(__dirname + "/views/partials");
@@ -440,6 +436,10 @@ app.get("/deckbuild", async (request, response) => {
         oldCards: playerDetails[0].deck.cards
     });
 });
+
+app.post("/deckbuild/confirm"), async (request, response) => {
+    request.body
+}
 
 app.get("/play/:player/:opponent", async (request, response) => {
     console.log(request.params);
