@@ -358,7 +358,26 @@ hbs.registerHelper("populateLiveGames", (playerName, opponentNames) => {
     return links.join(`\n`);
 });
 
-hbs.registerHelper("handToDeck", () => {
+hbs.get("/endTurn/playerOne/:playerOne/playerTwo/:playerTwo/current/:currentPlayer", async (request, response) => {
+    let playerArray = [request.params.playerOne, request.params.playerTwo];
+    console.log('player array: ')
+    console.log(playerArray)
+    let currentGame = await databaseUtils.checkGame(playerArray, liveGames, nodeProjectDB);
+    // let gameState = await gameEngine.renderGame(currentGame, request.params.currentPlayer);
+    let currentPlayer;
+    if (currentGame[0].gameState.player1.username === request.params.currentPlayer) {
+        currentPlayer = "player1"
+    } else {
+        currentPlayer = "player2";
+    }
+    currentGame[0].gameState.field = currentGame[0].gameState.hand;
+    currentGame[0].gameState.hand = [];
+    // let turnBuffer = {
+    //     hand: [],
+    //     deck: currentGame[0].gameState[currentPlayer].deck,
+    //     field: currentGame[0].gameState[currentPlayer].hand
+    // }
+    // let endTurn = await gameEngine.updateTurn(currentGame, currentPlayer, turnBuffer)
     console.log('aha')
 });
 
@@ -385,7 +404,9 @@ app.get("/play/playerOne/:playerOne/playerTwo/:playerTwo/current/:currentPlayer"
     let opponentHero = gameState.opponent.hero;
     let opponentUserName = gameState.opponent.username;
 
-    let playerField = gameState.player.field;
+    // play all 5 cards at the start of the game
+    let playerField = gameState.player.hand;
+
     let playerLife = gameState.player.life;
     let playerMana = gameState.player.mana;
     let playerHero = gameState.player.hero;

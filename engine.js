@@ -110,9 +110,10 @@ var fillGameButtons = (games, username) => {
     return buttons;
 };
 
-var updateTurn = (currentGame, player, turnBuffer) => {
+// changed player to playerUserName
+var updateTurn = (currentGame, playerUserName, turnBuffer) => {
     let turn = {
-        uuid: player.username,
+        username: playerUserName,
         hand: turnBuffer.hand,
         deck: turnBuffer.deck,
         field: turnBuffer.field,
