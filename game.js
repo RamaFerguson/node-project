@@ -1,7 +1,7 @@
 //const fs = require("fs");
 //const usernamev1 = require("username/v1");
 const Card = require("./cards");
-const Heroes = require("./assets/heroes");
+const Heroes = require("./heroes");
 
 //const liveGames = "./live_games/";
 //const deadGames = "./dead_games/";
