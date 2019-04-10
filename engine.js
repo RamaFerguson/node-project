@@ -90,7 +90,9 @@ var updateTurn = (currentGame, player, turnBuffer) => {
     currentGame.acceptTurn(turn);
 };
 
-var renderGame = (currentGame, )
+var renderGame = (currentGame, username) => {
+    let opponent
+}
 
 module.exports = {
     initGame,
